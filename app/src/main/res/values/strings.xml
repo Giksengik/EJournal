@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="mainMenuPersons">Persons</string>
+    <string name="mainMenuClasses">Classes</string>
+    <string name="mainMenuElectives">Electives</string>
+    <string name="mainMenuSections">Sections</string>
+    <string name="nameForSchool">Name: </string>
+    <string name="addressForSchool">Address: </string>
+</resources>
