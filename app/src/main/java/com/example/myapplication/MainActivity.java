@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, (school.teachers[0].position), Toast.LENGTH_SHORT).show();
             for(int i=0;i<school.teachers[0].qualifications.length;i++){
                 Toast.makeText(this, (school.teachers[0].qualifications[i]), Toast.LENGTH_SHORT).show();
-            } 
+            }
              */
         }else{
             school=(School)m.getSerializableExtra("school");
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0;i<employees.length;i++){
                     if(employees[i]==null){
                         employees[i]=new Employee(name,phone,id,position);
-                        if(id>School.num_of_cards){
+                        if(id>=School.num_of_cards){
                             School.num_of_cards=id+1;
                         }
                         break;
@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0;i<learners.length;i++){
                     if(learners[i]==null){
                         learners[i]=new Learner(nameLearner,phoneLearner,id,parents);
-                        if(id>School.num_of_cards){
+                        if(id>=School.num_of_cards){
                             School.num_of_cards=id+1;
                         }
                         break;
@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                 for(int i=0;i<teachers.length;i++){
                     if(teachers[i]==null){
                         teachers[i]=new Teacher(name,phone,id,position,qualifications);
-                        if(id>School.num_of_cards){
+                        if(id>=School.num_of_cards){
                             School.num_of_cards=id+1;
                         }
                         break;

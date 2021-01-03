@@ -33,29 +33,20 @@ public class AddPersonActivity extends AppCompatActivity {
                 case R.id.buttonNewEmployee:
                     i = new Intent(AddPersonActivity.this, NewEmployeeActivity.class);
                     i.putExtra("school",school);
-                    startActivityForResult(i,1);
+                    startActivity(i);
                     break;
                 case R.id.buttonNewLearner:
                     i = new Intent(AddPersonActivity.this, NewLearnerActivity.class);
                     i.putExtra("school",school);
-                    startActivityForResult(i,1);
+                    startActivity(i);
                     break;
                 case R.id.buttonNewTeacher:
                     i = new Intent(AddPersonActivity.this, NewTeacherActivity.class);
                     i.putExtra("school",school);
-                    startActivityForResult(i,1);
+                    startActivity(i);
                     break;
             }
         }
     };
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        school =(School)data.getSerializableExtra("school");
-        Intent i = new Intent(AddPersonActivity.this,MainActivity.class);
-        i.putExtra("school",school);
-        setResult(RESULT_CANCELED,i);
-        startActivity(i);
-    }
 }
 
