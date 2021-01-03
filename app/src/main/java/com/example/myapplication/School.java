@@ -9,6 +9,7 @@ public class School implements Serializable {
     public String address;
     public String name;
     public static int num_of_cards=1;
+    public static int num_of_classes=0;
     public Class [] classes;
     public Elective [] electives;
     public Section [] sections;

@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     final String FILE_NAME_EMPLOYEE="employees";
     final String FILE_NAME_LEARNERS="learners";
     final String FILE_NAME_TEACHERS="teachers";
+    final String FILE_NAME_CLASSES="class";
     Employee [] employees =new Employee[100];
     Learner [] learners = new Learner[2000];
     Teacher [] teachers = new Teacher[200];
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
             makeSchoolEntities(employees, learners, teachers, classes, electives, sections);
             school = new School(employees, teachers, learners, textSchoolAddress.getText().toString()
                     , textSchoolAddress.getText().toString(), classes, electives, sections); // creating school object
+            Toast.makeText(this, (""+school.classes[4].number), Toast.LENGTH_SHORT).show();
             /*Toast.makeText(this, (""+school.employees[0].CardID), Toast.LENGTH_SHORT).show();
             Toast.makeText(this, (school.teachers[0].fullName), Toast.LENGTH_SHORT).show();
             Toast.makeText(this, (school.teachers[0].phone), Toast.LENGTH_SHORT).show();
@@ -340,6 +342,76 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        //Classes
+        int numOfClasses=0;
+            try{
+            String str = "";
+            for(int i=0;i<classes.length;i++){
+                String file_name=FILE_NAME_CLASSES+(i+1);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(
+                            openFileInput(file_name)));
+                    if((str=br.readLine())!=null) {
+                        numOfClasses++;
+                    }else{
+                        break;
+                    }
+            }
+            }catch (FileNotFoundException ignored) {
+
+                }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        School.num_of_classes=numOfClasses;
+            try{
+            for(int i=0;i<numOfClasses;i++){
+                String str;
+                String className=null;
+                Teacher classTeacher=null;
+                Learner [] classLearners= new Learner[100];
+                int ID=0;
+                String file_name=FILE_NAME_CLASSES+(i+1);
+                BufferedReader br = new BufferedReader(new InputStreamReader(
+                        openFileInput(file_name)));
+                for(int j=0;j<2;j++){
+                    if(j==0){
+                        str=br.readLine();
+                        ID=Integer.parseInt(str);
+                    }else if(j==1){
+                        str=br.readLine();
+                        className=str;
+                    }
+                }
+                for(int k=0;k<teachers.length;k++){
+                    if(teachers[k]==null){
+                        break;
+                    }
+                    if(teachers[k].CardID==ID){
+                        classTeacher=teachers[k];
+                        break;
+                    }
+                }int count=0;
+                while ((str = br.readLine()) != null) {
+                    int learnersId=Integer.parseInt(str);
+                    for(int j=0;j<learners.length;j++){
+                        if(learnersId==learners[j].CardID){
+                            classLearners[count]=learners[j];
+                            count++;
+                            break;
+                        }
+                    }
+                }
+                Class newClass= new Class(className,classTeacher,classLearners);
+                for(int k=0;k<classes.length;k++){
+                    if(classes[k]==null){
+                        classes[k]=newClass;
+                        break;
+                    }
+                }
+            }
+        }catch (IOException e) {
             e.printStackTrace();
         }
     }
