@@ -49,7 +49,7 @@ public class ClassesActivity extends AppCompatActivity {
 
     void makeNewClass(Teacher classTeacher, String className) {
         School.num_of_classes++;
-        String file_name = FILE_NAME_CLASSES + School.num_of_classes;
+        String file_name = FILE_NAME_CLASSES + School.num_of_classes);
         FileOutputStream fos = null;
         try {
             fos = openFileOutput(file_name, MODE_PRIVATE);
@@ -80,25 +80,25 @@ public class ClassesActivity extends AppCompatActivity {
         setResult(RESULT_CANCELED, i);
         startActivity(i);
     }
-
-    void writeNewLearner(Learner learner, Class curClass) {
-        String file_name = null;
+    private String getClassFileName (Class curClass) {
+        String file_name=null;
         try {
             String str;
             int teacherID = curClass.classTeacher.CardID;
             for (int i = 0; i < School.num_of_classes; i++) {
                 file_name = FILE_NAME_CLASSES + (i + 1);
-                BufferedReader br = new BufferedReader(new InputStreamReader(
-                        openFileInput(file_name)));
+                BufferedReader br = new BufferedReader(new InputStreamReader(openFileInput(file_name)));
                 str = br.readLine();
                 if (Integer.parseInt(str) == teacherID) {
                     break;
                 }
             }
-        } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return file_name;
+    }
+    private void writeLearnerToFile(Learner learner, String file_name){
         FileOutputStream fos = null;
         try {
             fos = openFileOutput(file_name, MODE_APPEND);
@@ -108,13 +108,17 @@ public class ClassesActivity extends AppCompatActivity {
         } catch (IOException ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         } finally {
-            try {
-                if (fos != null)
+            try {if (fos != null)
                     fos.close();
             } catch (IOException ex) {
                 Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    void writeNewLearner(Learner learner, Class curClass) throws IOException {
+        String file_name = getClassFileName(curClass);
+        if (file_name == null) throw new IOException("NOT FOUND FILE FOR THIS CLASS!!!!");
+        writeLearnerToFile(learner,file_name);
     }
 
     void findClassByName(String className) {
@@ -138,33 +142,41 @@ public class ClassesActivity extends AppCompatActivity {
         }
         return null;
     }
-
-    @SuppressLint("SetTextI18n")
-    void showClass(Class currentClass) {
-        className.setText("Class name: " + currentClass.number);
-        classTeacherId.setText("Class teacher's ID: " + currentClass.classTeacher.CardID);
-        classTeacherName.setText("Class teacher's name: " + currentClass.classTeacher.fullName);
-        String learners = "";
-        String b;
+    private String collectClassLearners(Class currentClass) {
+        StringBuilder learners = new StringBuilder();
         for (int i = 0; i < currentClass.learners.length; i++) {
             if (currentClass.learners[i] == null) {
                 break;
             } else {
                 if (i != 0) {
-                    b = learners + ", " + (i + 1) + ")" + " Name: " + currentClass.learners[i].fullName + " ID: " +
-                            currentClass.learners[i].CardID;
+                    learners.append(", ").append(i + 1).append(")").append(" Name: ").append(currentClass.learners[i].fullName).append(" ID: ").append(currentClass.learners[i].CardID);
                 } else {
-                    b = "Learners: 1) Name: " + currentClass.learners[i].fullName + " ID: " +
-                            currentClass.learners[i].CardID;
+                    learners.append("Learners: 1) Name: ").append(currentClass.learners[i].fullName).append(" ID: ").append(currentClass.learners[i].CardID);
                 }
-                learners = b;
             }
         }
-        if (learners.equals("")) {
-            classLearners.setText("Learners: none");
-        } else {
-            classLearners.setText(learners);
-        }
+        return learners.toString();
+    }
+    @SuppressLint("SetTextI18n")
+    private void setDialogClassLearners(String learners){
+        if (learners.equals("")) classLearners.setText("Learners: none");
+         else classLearners.setText(learners);
+    }
+    private void defineDialogClassLearners(Class currentClass) {
+        String learners = collectClassLearners(currentClass);
+        setDialogClassLearners(learners);
+    }
+    @SuppressLint("SetTextI18n")
+    private void defineDialogClassFields(Class currentClass){
+        className.setText("Class name: " + currentClass.number);
+        classTeacherId.setText("Class teacher's ID: " + currentClass.classTeacher.CardID);
+        classTeacherName.setText("Class teacher's name: " + currentClass.classTeacher.fullName);
+        defineDialogClassLearners(currentClass);
+    }
+    @SuppressLint("SetTextI18n")
+    void showClass(Class currentClass) {
+        defineDialogClassFields(currentClass);
+
         dialogClass.show();
     }
 
@@ -180,9 +192,7 @@ public class ClassesActivity extends AppCompatActivity {
     }
 
     private void defineSearchListener() {
-        searchButton.setOnClickListener(v -> {
-            findClassByName(searchBoardClasses.getText().toString());
-        });
+        searchButton.setOnClickListener(v -> findClassByName(searchBoardClasses.getText().toString()));
     }
 
     private void defineClassDialog() {
@@ -213,125 +223,148 @@ public class ClassesActivity extends AppCompatActivity {
         defineSearchSystem();
         defineSchool();
         defineListView();
-        defineButtons();
+        defineButtonsListeners();
     }
-
-    private void defineButtons() {
-        buttonNewClass.setOnClickListener(v -> dialogNewClass.show());
-        buttonCancelNewClass.setOnClickListener(v -> dialogNewClass.dismiss());
-        buttonClassAddLearner.setOnClickListener(v -> {
-            if(newClassLearnerId.getText().toString().matches("[0-9]+")) {
-                if (Integer.parseInt(newClassLearnerId.getText().toString()) >= School.num_of_cards) {
-                    newClassLearnerId.setText("");
-                    newClassLearnerId.setHint("no learner with this ID");
-                    newClassLearnerId.setHintTextColor(Color.RED);
-
-                } else {
-                    Learner newLearner = null;
-                    boolean flag1 = true;
-                    for (int i = 0; i < school.learners.length; i++) {
-                        if (school.learners[i] == null) {
-                            newClassLearnerId.setText("");
-                            newClassLearnerId.setHint("no learner with this ID");
-                            newClassLearnerId.setHintTextColor(Color.RED);
-                            flag1 = false;
-                            break;
-                        } else if (school.learners[i].CardID == Integer.parseInt(newClassLearnerId.getText().toString())) {
-                            newLearner = school.learners[i];
-                            break;
-                        }
-                    }
-                    if (flag1) {
-                        boolean flag = true;
-                        for (int i = 0; i < school.classes.length; i++) {
-                            if (school.classes[i] == null) {
-                                break;
-                            } else {
-                                for (int j = 0; j < school.classes[i].learners.length; j++) {
-                                    if (school.classes[i].learners[j] == null) {
-                                        break;
-                                    } else {
-                                        if (school.classes[i].learners[j].CardID ==
-                                                Integer.parseInt(newClassLearnerId.getText().toString())) {
-                                            newClassLearnerId.setText("");
-                                            newClassLearnerId.setHint(
-                                                    "the student is already in another class");
-                                            newClassLearnerId.setHintTextColor(Color.RED);
-                                            flag = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        if (flag){
-                            Class classToAdd;
-                            for(int i=0;i<school.classes.length;i++){
-                                String a=className.getText().toString().substring(12);
-                                if(school.classes[i].number.equals(a)){
-                                    classToAdd=school.classes[i];
-                                    for(int j=0;j<school.classes[i].learners.length;j++){
-                                        if(school.classes[i].learners[j]==null){
-                                            school.classes[i].learners[j]=newLearner;
-                                            break;
-                                        }
-                                    }
-                                    Intent b=new Intent(ClassesActivity.this,MainActivity.class);
-                                    writeNewLearner(newLearner,classToAdd);
-                                    b.putExtra("school",school);
-                                    setResult(RESULT_CANCELED,b);
-                                    startActivity(b);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }else{
-                newClassLearnerId.setText("");
-                newClassLearnerId.setHint("wrong input");
-                newClassLearnerId.setHintTextColor(Color.RED);
+    private boolean isCorrectTeacherIDInput(String input){
+        return input.matches("[0-9]+") && Integer.parseInt(input) < School.num_of_cards &&
+                Integer.parseInt(input) > 0;
+    }
+    private void informWrongTeacherIDInput(){
+        newClassTeacherID.setText("");
+        newClassTeacherID.setHint("wrong input");
+        newClassTeacherID.setHintTextColor(Color.RED);
+    }
+    private Teacher findTeacherByID(int id) {
+        for (int i = 0; i < school.teachers.length; i++) {
+            if (school.teachers[i] == null) return null;
+            if (school.teachers[i].CardID == id) {
+                return school.teachers[i];
             }
-        });
+        }
+        return null;
+    }
+    private void informNoTeacherWithID(){
+        newClassTeacherID.setText("");
+        newClassTeacherID.setHint("no teacher with this ID");
+        newClassTeacherID.setHintTextColor(Color.RED);
+    }
+    private boolean isTeacherFree(int teacherID){
+        for (int i = 0; i < school.classes.length - 1; i++){
+            if (school.classes[i] == null) return true;
+            if (school.classes[i].classTeacher.CardID == teacherID) return false;
+        }
+        return true;
+    }
+    private void informTeacherIsNotFree(){
+        newClassTeacherID.setText("");
+        newClassTeacherID.setHint("Teacher isn't free" );
+        newClassTeacherID.setHintTextColor(Color.RED);
+    }
+    private void defineButtonOkNewClassListener(){
         buttonOkNewClass.setOnClickListener(v -> {
-            boolean flag = false;
-            Teacher classTeacher = null;
-            if (newClassTeacherID.getText().toString().matches("[0-9]+")) {
-                if (Integer.parseInt(newClassTeacherID.getText().toString()) > School.num_of_cards) {
-                    newClassTeacherID.setText("");
-                    newClassTeacherID.setHint("no teacher with this ID");
-                    newClassTeacherID.setHintTextColor(Color.RED);
-                } else {
-                    for (int i = 0; i < school.teachers.length; i++) {
-                        if (school.teachers[i] == null) {
-                            newClassTeacherID.setText("");
-                            newClassTeacherID.setHint("no teacher with this ID");
-                            newClassTeacherID.setHintTextColor(Color.RED);
-                            break;
-                        } else if (school.teachers[i].CardID == Integer.parseInt(newClassTeacherID.getText().toString())) {
-                            flag = true;
-                            classTeacher = school.teachers[i];
-                            break;
-                        }
+            if (isCorrectTeacherIDInput(newClassTeacherID.getText().toString())) {
+                Teacher currentTeacher = findTeacherByID(Integer.parseInt(newClassTeacherID.getText().toString()));
+                if (currentTeacher == null) informNoTeacherWithID();
+                else {
+                    if(isTeacherFree(currentTeacher.CardID)){
+                        makeNewClass(currentTeacher, newClassName.getText().toString());
+                    }else{
+                        informTeacherIsNotFree();
                     }
                 }
             } else {
-                newClassTeacherID.setText("");
-                newClassTeacherID.setHint("wrong input");
-                newClassTeacherID.setHintTextColor(Color.RED);
-            }
-            if (newClassName.getText().toString().length() == 0 ||
-                    newClassName.getText().toString().matches("[ ]*")) {
-                flag = false;
-                newClassName.setText("");
-                newClassName.setHint("wrong input");
-                newClassName.setHintTextColor(Color.RED);
-            }
-            if(flag){
-                makeNewClass(classTeacher,newClassName.getText().toString());
+                informWrongTeacherIDInput();
             }
         });
+    }
+    private void defineNewClassDialogButtonListeners(){
+        buttonNewClass.setOnClickListener(v -> dialogNewClass.show());
+        buttonCancelNewClass.setOnClickListener(v -> dialogNewClass.dismiss());
+        defineButtonOkNewClassListener();
+    }
+    private void informWrongLearnerInput(){
+        newClassLearnerId.setText("");
+        newClassLearnerId.setHint("wrong input");
+        newClassLearnerId.setHintTextColor(Color.RED);
+    }
+    private Learner findLearnerByID(int learnerId) {
+        for (int i = 0; i < school.learners.length; i++) {
+            if (school.learners[i] == null) return null;
+            if (school.learners[i].CardID == learnerId) return school.learners[i];
+        }
+        return null;
+    }
+    private void informNoLearnerWithID() {
+        newClassLearnerId.setText("");
+        newClassLearnerId.setHint("there is no learner with this ID");
+        newClassLearnerId.setHintTextColor(Color.RED);
+    }
+    private boolean isLearnerFree(int learnerID) {
+        for (int i = 0; i < school.classes.length; i++) {
+            if (school.classes[i] == null) return true;
+            for (int j = 0; j < school.classes[i].learners.length; j++) {
+                if (school.classes[i].learners[j] == null) break;
+                if (school.classes[i].learners[j].CardID == learnerID) return false;
+            }
+        }
+        return true;
+    }
+    private void informLearnerIsNotFree(){
+        newClassLearnerId.setText("");
+        newClassLearnerId.setHint(
+                "the student is already in another class");
+        newClassLearnerId.setHintTextColor(Color.RED);
+    }
+    private void startMainActivity() {
+        Intent b=new Intent(ClassesActivity.this,MainActivity.class);
+        b.putExtra("school",school);
+        setResult(RESULT_CANCELED,b);
+        startActivity(b);
+    }
+    private void findClassToAddLeanerByNameAndAddLearner(Learner learner){
+        Class classToAdd;
+        for(int i=0;i<school.classes.length;i++){
+            String toCheck=className.getText().toString().substring(12);
+            if(school.classes[i].number.equals(toCheck)){
+                classToAdd=school.classes[i];
+                for(int j=0;j<school.classes[i].learners.length;j++){
+                    if(school.classes[i].learners[j]==null){
+                        school.classes[i].learners[j]=learner;
+                        break;
+                    }
+                }
+                try {
+                    writeNewLearner(learner,classToAdd);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                startMainActivity();
+                break;
+            }
+        }
+    }
+    private void defineButtonClassAddButton(){
+        buttonClassAddLearner.setOnClickListener(v -> {
+            if(isCorrectTeacherIDInput(newClassLearnerId.getText().toString())){
+                Learner currentLearner = findLearnerByID(Integer.parseInt(newClassLearnerId.getText().toString()));
+                if(currentLearner == null) informNoLearnerWithID();
+                else {
+                    if (isLearnerFree(currentLearner.CardID)) {
+                       findClassToAddLeanerByNameAndAddLearner(currentLearner);
+
+                    }
+                    else informLearnerIsNotFree();
+                }
+                } else informWrongLearnerInput();
+        });
+    }
+    private void defineClassAddLearnerDialogListeners(){
         buttonClassCancel.setOnClickListener(v -> dialogClass.dismiss());
+        defineButtonClassAddButton();
+    }
+    private void defineButtonsListeners() {
+        defineNewClassDialogButtonListeners();
+        defineClassAddLearnerDialogListeners();
     }
 
     private void defineSchool() {
