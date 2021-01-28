@@ -16,7 +16,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -49,7 +48,7 @@ public class ClassesActivity extends AppCompatActivity {
 
     void makeNewClass(Teacher classTeacher, String className) {
         School.num_of_classes++;
-        String file_name = FILE_NAME_CLASSES + School.num_of_classes);
+        String file_name = FILE_NAME_CLASSES + School.num_of_classes;
         FileOutputStream fos = null;
         try {
             fos = openFileOutput(file_name, MODE_PRIVATE);
