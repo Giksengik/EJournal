@@ -51,8 +51,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:inputType="textPersonName" />
 
         <LinearLayout
             android:layout_width="match_parent"

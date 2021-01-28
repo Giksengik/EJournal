@@ -60,8 +60,7 @@
             android:layout_marginLeft="10dp"
             android:ems="10"
             android:hint="Enter id to add a new learner"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:inputType="textPersonName" />
 
         <LinearLayout
             android:layout_width="match_parent"
