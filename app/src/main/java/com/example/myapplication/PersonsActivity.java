@@ -85,10 +85,75 @@ public class PersonsActivity extends AppCompatActivity {
         defineEmployeeDialog();
         defineLearnerDialog();
         defineTeacherDialog();
+        cancelInfoEmployee.setOnClickListener(v -> dialogEmployee.dismiss());
+        cancelInfoLearner.setOnClickListener(v -> dialogLearner.dismiss());
+        cancelInfoTeacher.setOnClickListener(v -> dialogTeacher.dismiss());
+    }
+    private boolean isCorrectInput(String id){
+        if(id.matches("[0-9]+")) {
+                return Integer.parseInt(id) >= School.num_of_cards ||
+                    Integer.parseInt(id) > 0;
+        }
+        return false;
+    }
+    private void informWrongInput () {
+        searchBoard.setText("");
+        searchBoard.setHint("wrong input");
+        searchBoard.setHintTextColor(Color.RED);
+    }
+    private void informThereIsNoPerson(){
+        searchBoard.setText("");
+        searchBoard.setHint("no person with this id");
+        searchBoard.setHintTextColor(Color.RED);
+    }
+    private void checkTeacherWithID(int id) {
+        for (int i = 0; i < school.teachers.length; i++) {
+            if (school.teachers[i] == null) informThereIsNoPerson();
+            else if (school.teachers[i].CardID == id){
+                setDialogTeacherAttributes(school.teachers[i]);
+                dialogTeacher.show();
+                break;
+            }
+
+        }
+    }
+    private void checkLearnerWithID(int id) {
+        for (int i = 0; i < school.learners.length; i++) {
+                if (school.learners[i] == null) {
+                    checkTeacherWithID(id);
+                }else if (school.learners[i].CardID == id){
+                    setDialogLearnerAttributes(school.learners[i]);
+                    dialogLearner.show();
+                    break;
+                }
+
+        }
+    }
+    private void checkEmployeeWithID(int id){
+        for (int i = 0; i < school.employees.length; i++) {
+            if (school.employees[i] == null) {
+                checkLearnerWithID(id);
+            } else if (school.employees[i].CardID == id) {
+                setDialogEmployeeAttributes(school.employees[i]);
+                dialogEmployee.show();
+                break;
+            }
+        }
+    }
+    private void defineSearchSystemButtonListener(){
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isCorrectInput(searchBoard.getText().toString())){
+                    checkEmployeeWithID(Integer.parseInt(searchBoard.getText().toString()));
+                } else informWrongInput();
+            }
+        });
     }
     private void defineSearchSystem(){
         searchButton =(ImageButton)findViewById(R.id.searchButton);
         searchBoard=(EditText)findViewById(R.id.searchBoardPersons);
+        defineSearchSystemButtonListener();
     }
     private void defineSchool(){
         Intent mIntent = getIntent();
@@ -98,7 +163,7 @@ public class PersonsActivity extends AppCompatActivity {
         persons = new String[School.num_of_cards-1];
         for(int i=0;i<School.num_of_cards-1;i++){
             for(int j=0;j<numEmployees;j++){
-                if(school.employees[j].CardID==i+1){
+                if(school.employees[j].CardID == i+1){
                     persons[i]="Employee  | Card ID:"+(i+1)+" | Full Name:"+school.employees[j].fullName;
                 }
             }
@@ -161,7 +226,7 @@ public class PersonsActivity extends AppCompatActivity {
     }
     private Teacher findTeacherByPosition(int position){
         for(int i=0;i<school.teachers.length;i++){
-            if(school.teachers[i].CardID == position +1){
+            if(school.teachers[i].CardID == position + 1){
                 return school.teachers[i];
             }
         }
@@ -247,6 +312,22 @@ public class PersonsActivity extends AppCompatActivity {
         defineAmountOfTeachers();
         defineAmountOfLearners();
     }
+    private void startAddPersonActivity(){
+        Intent i;
+        i = new Intent(PersonsActivity.this, AddPersonActivity.class);
+        i.putExtra("school",school);
+        startActivity(i);
+    }
+    private void  defineButtonAddPersonListener () {
+        buttonAddPerson.setOnClickListener(v -> startAddPersonActivity());
+    }
+    private void defineButtonNewPerson () {
+        buttonAddPerson= (Button)findViewById(R.id.buttonAddPerson);
+        defineButtonAddPersonListener();
+    }
+    private void defineButtons(){
+        defineButtonNewPerson();
+    }
     private void defineElementsAndSetContentView(){
         setContentView(R.layout.activity_persons);
         defineSchool();
@@ -254,127 +335,13 @@ public class PersonsActivity extends AppCompatActivity {
         defineSearchSystem();
         defineDialogs();
         defineListView();
+        defineButtons();
     }
     @SuppressLint("SetTextI18n")
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             defineElementsAndSetContentView();
-            buttonAddPerson= (Button)findViewById(R.id.buttonAddPerson);
-            //Initialize dialogs
-            //Making list
-
-
-            searchButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if(searchBoard.getText().toString().matches("[0-9]+")){
-                        if(Integer.parseInt(searchBoard.getText().toString())>=School.num_of_cards){
-                            searchBoard.setText("");
-                            searchBoard.setHint(
-                                    "no person with this id");
-                            searchBoard.setHintTextColor(Color.RED);
-                        }else {
-                            boolean flag = false;
-                            for (int i = 0; i < school.employees.length; i++) {
-                                if (school.employees[i] == null) {
-                                    break;
-                                } else if (school.employees[i].CardID == Integer.parseInt(searchBoard.getText().toString())) {
-                                    flag = true;
-                                    nameEmployee.setText("Full name: " + school.employees[i].fullName);
-                                    cardIdEmployee.setText("Card ID: " + school.employees[i].CardID);
-                                    phoneEmployee.setText("Phone: " + school.employees[i].phone);
-                                    positionEmployee.setText("Position: " + school.employees[i].position);
-                                    dialogEmployee.show();
-                                    break;
-                                }
-                            }
-                            for (int i = 0; i < school.teachers.length; i++) {
-                                if (!flag) {
-                                    if (school.teachers[i] == null) {
-                                        break;
-                                    } else if (school.teachers[i].CardID == Integer.parseInt(searchBoard.getText().toString())) {
-                                        flag = true;
-                                        teacherCardId.setText("Card ID: " + school.teachers[i].CardID);
-                                        teacherName.setText("Full name: " + school.teachers[i].fullName);
-                                        teacherPhone.setText("Phone: " + school.teachers[i].phone);
-                                        teacherPosition.setText("Position: " + school.teachers[i].position);
-                                        String qualifications = "";
-                                        String s = null;
-                                        String b = null;
-                                        for (int j = 0; j < school.teachers[i].qualifications.length; j++) {
-                                            s = school.teachers[i].qualifications[j];
-                                            if (j != school.teachers[i].qualifications.length - 1) {
-                                                b = qualifications + s + ", ";
-                                            } else {
-                                                b = qualifications + s;
-                                            }
-                                            qualifications = b;
-                                        }
-                                        teacherQualifications.setText("Qualifications: " + qualifications);
-                                        dialogTeacher.show();
-                                        break;
-                                    }
-                                } else {
-                                    break;
-                                }
-                            }
-                            for (int i = 0; i < school.learners.length; i++) {
-                                if (!flag) {
-                                    if (school.learners[i] == null) {
-                                        break;
-                                    }else if (school.learners[i].CardID == Integer.parseInt(searchBoard.getText().toString())){
-                                        nameLearner.setText("Learner's full name: "+school.learners[i].fullName);
-                                        cardIdLearner.setText("Learner's Card ID: "+school.learners[i].CardID);
-                                        phoneLearner.setText("Learner's phone: "+school.learners[i].phone);
-                                        firstParentName.setText("First parent's name: "+school.learners[i].parents[0].fullName);
-                                        firstParentPhone.setText("First parent's phone: "+school.learners[i].parents[0].phone);
-                                        secondParentName.setText("Second parent's name: "+school.learners[i].parents[1].fullName);
-                                        secondParentPhone.setText("Second parent's phone: " +school.learners[i].parents[1].phone);
-                                        dialogLearner.show();
-                                        break;
-                                    }
-                                }else{
-                                    break;
-                                }
-                            }
-                        }
-                    }else{
-                        searchBoard.setText("");
-                        searchBoard.setHint("wrong input");
-                        searchBoard.setHintTextColor(Color.RED);
-                    }
-                }
-            });
-
-            buttonAddPerson.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i;
-                    i = new Intent(PersonsActivity.this, AddPersonActivity.class);
-                    i.putExtra("school",school);
-                    startActivity(i);
-                }
-            });
-            cancelInfoEmployee.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogEmployee.dismiss();
-                }
-            });
-            cancelInfoLearner.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogLearner.dismiss();
-                }
-            });
-            cancelInfoTeacher.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogTeacher.dismiss();
-                }
-            });
-
         }
     }
 
