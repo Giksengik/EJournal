@@ -14,75 +14,67 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class NewEmployeeActivity extends AppCompatActivity {
-    final String FILE_EMPLOYEES= "employees";
-    School school;
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_employee_activity);
-        Button buttonConfirm= findViewById(R.id.newEmployeeConfirm);
-        EditText employeeName= findViewById(R.id.editTextNewEmployee1);
-        EditText employeePhone= findViewById(R.id.editTextNewEmployee2);
-        EditText employeePosition= findViewById(R.id.editTextNewEmployee3);
+    final String FILE_EMPLOYEES = "employees";
+    private School school;
+    private Button buttonConfirm;
+    private EditText employeeName;
+    private EditText employeePhone;
+    private EditText employeePosition;
+
+    private void defineSchool() {
         Intent mIntent = getIntent();
-        school=(School)mIntent.getSerializableExtra("school");
-        buttonConfirm.setOnClickListener(v -> {
-            String name = employeeName.getText().toString();
-            String phone = employeePhone.getText().toString();
-            String position = employeePosition.getText().toString();
-            boolean flag=false;
-            if ("".equals(name) ||
-                    !name.matches("[a-zA-Z| ]+")||
-                    name.matches("[ ]*")) {
-                employeeName.setText("");
-                employeeName.setHint("wrong input");
-                employeeName.setHintTextColor(Color.RED);
-                flag=true;
-            }
-            if (phone.length() != 11 ||
-                    !phone.matches("[0-9]+")) {
-                employeePhone.setText("");
-                employeePhone.setHint("wrong input, don't write + ");
-                employeePhone.setHintTextColor(Color.RED);
-                flag=true;
-            }
-            if(position.equals("")||
-                    position.matches("[ ]*")) {
-                employeePosition.setHint("wrong input");
-                employeePosition.setHintTextColor(Color.RED);
-                employeePosition.setText("");
-                flag = true;
-            }if(!flag){
-                makeEmployee(name,phone,position,school);
-                Intent i=new Intent(NewEmployeeActivity.this,MainActivity.class);
-                i.putExtra("school",school);
-                setResult(RESULT_CANCELED,i);
-                startActivity(i);
-            }
-        });
+        school = (School) mIntent.getSerializableExtra("school");
+        setContentView(R.layout.add_employee_activity);
     }
-    void makeEmployee(String name,String phone,String position,School school){
+
+    private boolean isCorrectString(String string) {
+        return !("".equals(string) || !string.matches("[a-zA-Z| ]+") || string.matches("[ ]*"));
+    }
+
+    private boolean isCorrectPhoneNumber(String phone) {
+        return !(phone.length() != 11 || !phone.matches("[0-9]+"));
+    }
+
+    private void informWrongInputName() {
+        employeeName.setText("");
+        employeeName.setHint("wrong input");
+        employeeName.setHintTextColor(Color.RED);
+    }
+
+    private void informWrongInputPhone() {
+        employeePhone.setText("");
+        employeePhone.setHint("wrong input, don't write + ");
+        employeePhone.setHintTextColor(Color.RED);
+    }
+
+    private void informWrongInputPosition() {
+        employeePosition.setHint("wrong input");
+        employeePosition.setHintTextColor(Color.RED);
+        employeePosition.setText("");
+    }
+
+    ;
+
+    private void startMainActivityWithResult() {
+        Intent i = new Intent(NewEmployeeActivity.this, MainActivity.class);
+        i.putExtra("school", school);
+        setResult(RESULT_CANCELED, i);
+        startActivity(i);
+    }
+    private void writeNewLearnerToFile(){
         FileOutputStream fos = null;
         try {
             fos = openFileOutput(FILE_EMPLOYEES, MODE_APPEND);
             fos.write((School.num_of_cards+"").getBytes());
             fos.write("\n".getBytes());
-            fos.write(name.getBytes());
+            fos.write(employeeName.getText().toString().getBytes());
             fos.write("\n".getBytes());
-            fos.write(phone.getBytes());
+            fos.write(employeePhone.getText().toString().getBytes());
             fos.write("\n".getBytes());
-            fos.write(position.getBytes());
+            fos.write(employeePosition.getText().toString().getBytes());
             fos.write("\n".getBytes());
             fos.write("----------".getBytes());
             fos.write("\n".getBytes());
-            Toast.makeText(this, "Employee added", Toast.LENGTH_SHORT).show();
-            for(int i=0;i<school.employees.length;i++){
-               if(school.employees[i]==null){
-                   school.employees[i]=new Employee(name,phone,School.num_of_cards,position);
-                   School.num_of_cards++;
-                   break;
-               }
-            }
         } catch (IOException ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         } finally {
@@ -93,5 +85,55 @@ public class NewEmployeeActivity extends AppCompatActivity {
                 Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
+    }
+    private void putNewLearnerToSchool() {
+        for (int i = 0; i < school.employees.length; i++) {
+            if (school.employees[i] == null) {
+                school.employees[i] = new Employee
+                        (employeeName.getText().toString(), employeePhone.getText().toString(), School.num_of_cards,
+                                employeePosition.getText().toString());
+                School.num_of_cards++;
+                break;
+            }
+        }
+    }
+    private void makeEmployee() {
+        writeNewLearnerToFile();
+        putNewLearnerToSchool();
+
+
+    }
+
+    private void defineButtonConfirmListener() {
+        buttonConfirm.setOnClickListener(v -> {
+            String name = employeeName.getText().toString();
+            String phone = employeePhone.getText().toString();
+            String position = employeePosition.getText().toString();
+            if (isCorrectString(name)) {
+                if (isCorrectPhoneNumber(phone)) {
+                    if (isCorrectString(position)) {
+                        makeEmployee();
+                        startMainActivityWithResult();
+                    } else informWrongInputPosition();
+                } else informWrongInputPhone();
+            } else informWrongInputName();
+        });
+    }
+
+    private void defineElements() {
+        buttonConfirm = findViewById(R.id.newEmployeeConfirm);
+        employeeName = findViewById(R.id.editTextNewEmployee1);
+        employeePhone = findViewById(R.id.editTextNewEmployee2);
+        employeePosition = findViewById(R.id.editTextNewEmployee3);
+        defineButtonConfirmListener();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        defineSchool();
+        defineElements();
+
+
     }
 }

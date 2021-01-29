@@ -141,13 +141,10 @@ public class PersonsActivity extends AppCompatActivity {
         }
     }
     private void defineSearchSystemButtonListener(){
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(isCorrectInput(searchBoard.getText().toString())){
-                    checkEmployeeWithID(Integer.parseInt(searchBoard.getText().toString()));
-                } else informWrongInput();
-            }
+        searchButton.setOnClickListener(v -> {
+            if(isCorrectInput(searchBoard.getText().toString())){
+                checkEmployeeWithID(Integer.parseInt(searchBoard.getText().toString()));
+            } else informWrongInput();
         });
     }
     private void defineSearchSystem(){
