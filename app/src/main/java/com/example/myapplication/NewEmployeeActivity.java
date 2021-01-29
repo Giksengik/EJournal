@@ -26,15 +26,6 @@ public class NewEmployeeActivity extends AppCompatActivity {
         school = (School) mIntent.getSerializableExtra("school");
         setContentView(R.layout.add_employee_activity);
     }
-
-    private boolean isCorrectString(String string) {
-        return !("".equals(string) || !string.matches("[a-zA-Z| ]+") || string.matches("[ ]*"));
-    }
-
-    private boolean isCorrectPhoneNumber(String phone) {
-        return !(phone.length() != 11 || !phone.matches("[0-9]+"));
-    }
-
     private void informWrongInputName() {
         employeeName.setText("");
         employeeName.setHint("wrong input");
@@ -100,8 +91,7 @@ public class NewEmployeeActivity extends AppCompatActivity {
     private void makeEmployee() {
         writeNewLearnerToFile();
         putNewLearnerToSchool();
-
-
+        Toast.makeText(this, "Employee added", Toast.LENGTH_SHORT).show();
     }
 
     private void defineButtonConfirmListener() {
@@ -109,9 +99,9 @@ public class NewEmployeeActivity extends AppCompatActivity {
             String name = employeeName.getText().toString();
             String phone = employeePhone.getText().toString();
             String position = employeePosition.getText().toString();
-            if (isCorrectString(name)) {
-                if (isCorrectPhoneNumber(phone)) {
-                    if (isCorrectString(position)) {
+            if (StringValidation.isCorrectString(name)) {
+                if (StringValidation.isCorrectPhoneNumber(phone)) {
+                    if (StringValidation.isCorrectString(position)) {
                         makeEmployee();
                         startMainActivityWithResult();
                     } else informWrongInputPosition();
