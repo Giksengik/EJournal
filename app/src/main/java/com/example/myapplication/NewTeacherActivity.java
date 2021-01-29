@@ -17,168 +17,139 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class NewTeacherActivity extends AppCompatActivity {
-    School school;
-    String [] qualifications = new String[12];
-    final String FILE_TEACHERS="teachers";
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_teacher_activity);
+    private School school;
+    private String [] qualifications = new String[12];
+    private final String FILE_TEACHERS="teachers";
+    private Button buttonConfirm;
+    private CheckBox checkBoxMath;
+    private CheckBox checkBoxPhysics;
+    private CheckBox checkBoxHistory;
+    private CheckBox checkBoxBiology;
+    private CheckBox checkBoxChemistry;
+    private CheckBox checkBoxPhysTrain;
+    private CheckBox checkBoxComputerScience;
+    private CheckBox checkBoxGeography;
+    private CheckBox checkBoxForeignLanguage;
+    private CheckBox checkBoxNativeLanguage;
+    private CheckBox checkBoxLiterature;
+    private CheckBox checkBoxSocialStudies;
+    private TextView wrongInput;
+    private EditText teacherName;
+    private EditText teacherPosition;
+    private EditText teacherPhone;
+    private void defineSchool(){
         Intent mIntent = getIntent();
-        school=(School)mIntent.getSerializableExtra("school");
-        Button buttonConfirm= (Button)findViewById(R.id.newTeacherConfirm);
-        CheckBox checkBoxMath = (CheckBox)findViewById(R.id.checkBoxMath);
-        CheckBox checkBoxPhysics= (CheckBox)findViewById(R.id.checkBoxPhysics);
-        CheckBox checkBoxHistory = (CheckBox)findViewById(R.id.checkBoxHistory);
-        CheckBox checkBoxBiology = (CheckBox)findViewById(R.id.checkBoxBiology);
-        CheckBox checkBoxChemistry = (CheckBox)findViewById(R.id.checkBoxChemistry);
-        CheckBox checkBoxPhysTrain = (CheckBox)findViewById(R.id.checkBoxPhysicalTraining);
-        CheckBox checkBoxComputerScience = (CheckBox)findViewById(R.id.checkBoxComputerScience);
-        CheckBox checkBoxGeography = (CheckBox)findViewById(R.id.checkBoxGeography);
-        CheckBox checkBoxForeignLanguage = (CheckBox)findViewById(R.id.checkBoxForeignLanguage);
-        CheckBox checkBoxNativeLanguage = (CheckBox)findViewById(R.id.checkBoxNativeLanguage);
-        CheckBox checkBoxLiterature = (CheckBox)findViewById(R.id.checkBoxLiterature);
-        CheckBox checkBoxSocialStudies =(CheckBox)findViewById(R.id.checkBoxSocialStudies);
-        TextView wrongInput = (TextView)findViewById(R.id.newTeacherWrongInput);
-        EditText teacherName  = (EditText)findViewById(R.id.editTextNewTeacher1);
-        EditText teacherPosition = (EditText)findViewById(R.id.editTextNewTeacher2);
-        EditText teacherPhone = (EditText)findViewById(R.id.editTextNewTeacher3);
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View v) {
-                boolean flag1=false;
-                if(teacherName.getText().toString().matches("[a-zA-Z| ]+")&&
-                        teacherName.getText().toString().length()!=1&&
-                        !teacherName.getText().toString().matches("[ ]*")) {
-                    flag1=true;
-                }else{
-                     teacherName.setText("");
-                    teacherName.setHint("wrong input");
-                    teacherName.setHintTextColor(Color.RED);
-                }
-                if(teacherPosition.getText().toString().length()!=0&&
-                !teacherPosition.getText().toString().matches("[ ]*")){
-                    flag1=true;
-                }else{
-                    teacherPosition.setText("");
-                    teacherPosition.setHint("wrong input");
-                    teacherPosition.setHintTextColor(Color.RED);
-                }
-                if(teacherPhone.getText().toString().length() == 11||
-                        teacherPhone.getText().toString().matches("[0-9]+")){
-                    flag1=true;
-                }else{
-                    teacherPhone.setText("");
-                    teacherPhone.setHint("wrong input, don't write + ");
-                    teacherPhone.setHintTextColor(Color.RED);
-                }
-                    boolean flag = false;
-                if(checkBoxMath.isChecked()){
-                    addQualification("Mathematics",qualifications);
-                    flag=true;
-                }
-                if(checkBoxPhysics.isChecked()){
-                    addQualification("Mathematics",qualifications);
-                    addQualification("Physics",qualifications);
-                    flag=true;
-                }
-                if(checkBoxBiology.isChecked()){
-                    addQualification("Biology",qualifications);
-                    flag=true;
-                }
-                if(checkBoxHistory.isChecked()){
-                    addQualification("History",qualifications);
-                    addQualification("Social Studies",qualifications);
-                    flag=true;
-                }
-                if(checkBoxChemistry.isChecked()){
-                    addQualification("Chemistry",qualifications);
-                    flag=true;
-                }
-                if(checkBoxPhysTrain.isChecked()){
-                    addQualification("Physical Training",qualifications);
-                    flag=true;
-                }
-                if(checkBoxComputerScience.isChecked()){
-                    addQualification("Computer Science",qualifications);
-                    flag=true;
-                }
-                if(checkBoxGeography.isChecked()){
-                    addQualification("Geography",qualifications);
-                    flag=true;
-                }
-                if(checkBoxForeignLanguage.isChecked()){
-                    addQualification("Foreign Language",qualifications);
-                    flag=true;
-                }
-                if(checkBoxNativeLanguage.isChecked()){
-                    addQualification("Native Language",qualifications);
-                    addQualification("Literature",qualifications);
-                    flag=true;
-                }
-                if(checkBoxLiterature.isChecked()){
-                    addQualification("Native Language",qualifications);
-                    addQualification("Literature",qualifications);
-                    flag=true;
-                }
-                if(checkBoxSocialStudies.isChecked()){
-                    addQualification("History",qualifications);
-                    addQualification("Social Studies",qualifications);
-                    flag=true;
-                }
-                if(!flag||!flag1){
-                    wrongInput.setText("Wrong qualification, please choose at least one subject");
-                }
-                else{
-                    makeTeacher(qualifications,teacherName.getText().toString(),teacherPhone.getText().toString()
-                    ,teacherPosition.getText().toString());
-                    Intent i=new Intent(NewTeacherActivity.this,MainActivity.class);
-                    i.putExtra("school",school);
-                    setResult(RESULT_CANCELED,i);
-                    startActivity(i);
-                }
-            }
-        });
+        school =(School)mIntent.getSerializableExtra("school");
+
     }
-    void addQualification(String qualification,String [] qualifications){
-        for(int i=0;i<qualifications.length;i++){
-            if(qualifications[i]==null){
-                qualifications[i]=qualification;
-                break;
-            }else if(qualifications[i].equals(qualification)){
+    private void informWrongName(){
+        teacherName.setText("");
+        teacherName.setHint("wrong input");
+        teacherName.setHintTextColor(Color.RED);
+    }
+    private void informWrongPhone(){
+        teacherPhone.setText("");
+        teacherPhone.setHint("wrong input, don't write + ");
+        teacherPhone.setHintTextColor(Color.RED);
+    }
+    private void informWrongPosition(){
+        teacherPosition.setText("");
+        teacherPosition.setHint("wrong input");
+        teacherPosition.setHintTextColor(Color.RED);
+    }
+    @SuppressLint("SetTextI18n")
+    private boolean checkBoxInput(boolean isCorrect){
+        if(checkBoxPhysics.isChecked()){
+            addQualification("Mathematics",qualifications);
+            addQualification("Physics",qualifications);
+        }else if(checkBoxMath.isChecked()){
+            addQualification("Mathematics",qualifications);
+        }
+        if(checkBoxBiology.isChecked()){
+            addQualification("Biology",qualifications);
+        }
+        if(checkBoxHistory.isChecked() || checkBoxSocialStudies.isChecked()){
+            addQualification("History",qualifications);
+            addQualification("Social Studies",qualifications);
+        }
+        if(checkBoxChemistry.isChecked()){
+            addQualification("Chemistry",qualifications);
+        }
+        if(checkBoxPhysTrain.isChecked()){
+            addQualification("Physical Training",qualifications);
+        }
+        if(checkBoxComputerScience.isChecked()){
+            addQualification("Computer Science",qualifications);
+        }
+        if(checkBoxGeography.isChecked()){
+            addQualification("Geography",qualifications);
+        }
+        if(checkBoxForeignLanguage.isChecked()){
+            addQualification("Foreign Language",qualifications);
+        }
+        if(checkBoxNativeLanguage.isChecked() || checkBoxLiterature.isChecked()){
+            addQualification("Native Language",qualifications);
+            addQualification("Literature",qualifications);
+        }
+        if(qualifications[0] == null){
+            wrongInput.setText("Wrong qualification, please choose at least one subject");
+            return false;
+        }
+        return isCorrect;
+    }
+    @SuppressLint("SetTextI18n")
+    private boolean isCorrectInput(){
+        boolean isCorrect=true;
+        if(!StringValidation.isCorrectString(teacherName.getText().toString())){
+            isCorrect=false;
+            informWrongName();
+        }
+        if(!StringValidation.isCorrectString(teacherPosition.getText().toString())){
+            isCorrect=false;
+            informWrongPosition();
+        }
+        if(!StringValidation.isCorrectPhoneNumber(teacherPhone.getText().toString())){
+            isCorrect=true;
+            informWrongPhone();
+        }
+        return checkBoxInput(isCorrect);
+    }
+    private void startMainActivityWithResult() {
+        Intent i=new Intent(NewTeacherActivity.this,MainActivity.class);
+        i.putExtra("school",school);
+        setResult(RESULT_CANCELED,i);
+        startActivity(i);
+    }
+    private void writeNewTeacherQualificationsToFile(FileOutputStream fos) throws IOException {
+        int i=0;
+        while(i<12){
+            if (qualifications[i]==null) {
+                fos.write("----------".getBytes());
+                fos.write("\n".getBytes());
                 break;
             }
+            fos.write(qualifications[i].getBytes());
+            fos.write("\n".getBytes());
+            if(i==11){
+                fos.write("----------".getBytes());
+                fos.write("\n".getBytes());
+            }
+            i++;
         }
     }
-    void makeTeacher(String [] qualifications,String name,String phone,String position){
+    private void writeNewTeacherToFile(){
         FileOutputStream fos = null;
         try {
             fos = openFileOutput(FILE_TEACHERS, MODE_APPEND);
             fos.write((School.num_of_cards+"").getBytes());
             fos.write("\n".getBytes());
-            fos.write(name.getBytes());
+            fos.write(teacherName.getText().toString().getBytes());
             fos.write("\n".getBytes());
-            fos.write(phone.getBytes());
+            fos.write(teacherPhone.getText().toString().getBytes());
             fos.write("\n".getBytes());
-            fos.write(position.getBytes());
+            fos.write(teacherPosition.getText().toString().getBytes());
             fos.write("\n".getBytes());
-            int i=0;
-            while(i<12){
-                if (qualifications[i]==null) {
-                    fos.write("----------".getBytes());
-                    fos.write("\n".getBytes());
-                    break;
-                }
-                fos.write(qualifications[i].getBytes());
-                fos.write("\n".getBytes());
-                if(i==11){
-                    fos.write("----------".getBytes());
-                    fos.write("\n".getBytes());
-                }
-                i++;
-            }
-            Toast.makeText(this, "Teacher added", Toast.LENGTH_SHORT).show();
+            writeNewTeacherQualificationsToFile(fos);
         } catch (IOException ex) {
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         } finally {
@@ -189,7 +160,10 @@ public class NewTeacherActivity extends AppCompatActivity {
                 Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
-        Teacher teacher =new Teacher(name,phone,School.num_of_cards,position,qualifications);
+    }
+    private void putNewTeacherToSchool(){
+        Teacher teacher =new Teacher(teacherName.getText().toString(),teacherPhone.getText().toString(),School.num_of_cards,
+                teacherPosition.getText().toString(),qualifications);
         School.num_of_cards++;
         for(int i=0;i<school.teachers.length;i++){
             if(school.teachers[i]==null){
@@ -198,5 +172,57 @@ public class NewTeacherActivity extends AppCompatActivity {
             }
         }
     }
+    private void makeTeacher(){
+        writeNewTeacherToFile();
+        putNewTeacherToSchool();
+        Toast.makeText(this, "Teacher added", Toast.LENGTH_SHORT).show();
+    }
+    private void defineConfirmButtonListener(){
+        buttonConfirm.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("SetTextI18n")
+            @Override
+            public void onClick(View v) {
+                if(isCorrectInput()){
+                    makeTeacher();
+                    startMainActivityWithResult();
+                }
+            }
+        });
+    }
+    void addQualification(String qualification,String [] qualifications) {
+        for (int i = 0; i < qualifications.length; i++) {
+            if (qualifications[i] == null) {
+                qualifications[i] = qualification;
+                break;
+            }
+        }
+    }
+    private void defineElements() {
+        buttonConfirm = (Button) findViewById(R.id.newTeacherConfirm);
+        checkBoxMath = (CheckBox) findViewById(R.id.checkBoxMath);
+        checkBoxPhysics = (CheckBox) findViewById(R.id.checkBoxPhysics);
+        checkBoxHistory = (CheckBox) findViewById(R.id.checkBoxHistory);
+        checkBoxBiology = (CheckBox) findViewById(R.id.checkBoxBiology);
+        checkBoxChemistry = (CheckBox) findViewById(R.id.checkBoxChemistry);
+        checkBoxPhysTrain = (CheckBox) findViewById(R.id.checkBoxPhysicalTraining);
+        checkBoxComputerScience = (CheckBox) findViewById(R.id.checkBoxComputerScience);
+        checkBoxGeography = (CheckBox) findViewById(R.id.checkBoxGeography);
+        checkBoxForeignLanguage = (CheckBox) findViewById(R.id.checkBoxForeignLanguage);
+        checkBoxNativeLanguage = (CheckBox) findViewById(R.id.checkBoxNativeLanguage);
+        checkBoxLiterature = (CheckBox) findViewById(R.id.checkBoxLiterature);
+        checkBoxSocialStudies = (CheckBox) findViewById(R.id.checkBoxSocialStudies);
+        wrongInput = (TextView) findViewById(R.id.newTeacherWrongInput);
+        teacherName = (EditText) findViewById(R.id.editTextNewTeacher1);
+        teacherPosition = (EditText) findViewById(R.id.editTextNewTeacher2);
+        teacherPhone = (EditText) findViewById(R.id.editTextNewTeacher3);
+        defineConfirmButtonListener();
+    }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.add_teacher_activity);
+        defineSchool();
+        defineElements();
+    }
 }
