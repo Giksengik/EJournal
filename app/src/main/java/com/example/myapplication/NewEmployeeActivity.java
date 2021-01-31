@@ -59,6 +59,7 @@ public class NewEmployeeActivity extends AppCompatActivity {
                     if (StringValidation.isCorrectString(position)) {
                         saveNewEmployeeInDataBase();
                         putNewEmployeeToSchool();
+                        Toast.makeText(this, "Employee is created", Toast.LENGTH_SHORT).show();
                         startMainActivityWithResult();
                     } else informWrongInputPosition();
                 } else informWrongInputPhone();

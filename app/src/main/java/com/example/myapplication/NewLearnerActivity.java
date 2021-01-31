@@ -103,6 +103,7 @@ public class NewLearnerActivity extends AppCompatActivity {
             if(isCorrectInput()){
                 saveNewLearnerInDataBase();
                 putNewLearnerInSchool();
+                Toast.makeText(this, "Learner is created", Toast.LENGTH_SHORT).show();
                 startMainActivityWithResult();
             }
         });

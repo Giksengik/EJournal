@@ -133,6 +133,27 @@ public class PeopleDAO implements Serializable{
         }
         return null;
     }
+    public Employee findEmployeeByID (int id) {
+            String query = "select * from " + DBHelper.TABLE_PARTICIPANTS +
+                    " WHERE "+DBHelper.KEY_ID + " = " + id;
+        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(query, null);
+        if (cursor.moveToFirst()){
+                return new Employee(cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME)),
+                        cursor.getString(cursor.getColumnIndex(DBHelper.KEY_PHONE)),
+                        cursor.getInt(cursor.getColumnIndex(DBHelper.KEY_ID)),
+                        cursor.getString(cursor.getColumnIndex(DBHelper.KEY_POSITION)));
+        }
+        return null;
+    }
+    public String findParticipantsStatusByID(int id){
+        String query = "select * from " + DBHelper.TABLE_PARTICIPANTS +
+                " WHERE "+DBHelper.KEY_ID + " = " + id;
+        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+        return cursor.getString(cursor.getColumnIndex(DBHelper.KEY_STATUS));
+        }
+        return null;
+    }
     public DBHelper getDbHelper() {
         return dbHelper;
     }

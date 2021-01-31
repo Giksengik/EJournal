@@ -49,15 +49,20 @@ public class ClassesActivity extends AppCompatActivity {
     private ImageButton searchButton;
 
 
-//    void findClassByName(String className) {
-//        Class currentClass = checkIfClassExistAndReturnIt(className);
-//        if (currentClass != null) {
-//            showClass(currentClass);
-//        } else {
-//            informThereIsNoSuchClass();
-//        }
-//    }
-
+    private Class checkIfClassExistAndReturnIt(String nameClass){
+        for(Class currClass: peopleDAO.school.listClasses){
+            if(currClass.number.equals(nameClass)) return currClass;
+        }
+        return null;
+    }
+    void findClassByName(String className) {
+        Class currentClass = checkIfClassExistAndReturnIt(className);
+        if (currentClass != null) {
+            showClass(currentClass);
+        } else {
+            informThereIsNoSuchClass();
+        }
+    }
     private void informThereIsNoSuchClass() {
         searchBoardClasses.setText("");
         searchBoardClasses.setHint("There is no such class");
@@ -65,19 +70,10 @@ public class ClassesActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetTextI18n")
-    private void setDialogClassLearners(String learners){
-        if (learners.equals("")) classLearners.setText("Learners: none");
-         else classLearners.setText(learners);
-    }
-    private void defineDialogClassLearners(Class currentClass) {
-
-    }
-    @SuppressLint("SetTextI18n")
     private void defineDialogClassFields(Class currentClass){
         className.setText("Class name: " + currentClass.number);
         classTeacherId.setText("Class teacher's ID: " + currentClass.classTeacher.getCardID());
         classTeacherName.setText("Class teacher's name: " + currentClass.classTeacher.getFullName());
-        defineDialogClassLearners(currentClass);
     }
     @SuppressLint("SetTextI18n")
     void showClass(Class currentClass) {
@@ -88,15 +84,15 @@ public class ClassesActivity extends AppCompatActivity {
 
 
 
-//    private void defineSearchSystem() {
-//        searchBoardClasses = (EditText) findViewById(R.id.searchBoardClasses);
-//        searchButton = (ImageButton) findViewById(R.id.searchButtonClasses);
-//        defineSearchListener();
-//    }
+    private void defineSearchSystem() {
+        searchBoardClasses = (EditText) findViewById(R.id.searchBoardClasses);
+        searchButton = (ImageButton) findViewById(R.id.searchButtonClasses);
+        defineSearchListener();
+    }
 
-//    private void defineSearchListener() {
-//        searchButton.setOnClickListener(v -> findClassByName(searchBoardClasses.getText().toString()));
-//    }
+    private void defineSearchListener() {
+        searchButton.setOnClickListener(v -> findClassByName(searchBoardClasses.getText().toString()));
+    }
 
 
 
@@ -157,12 +153,9 @@ public class ClassesActivity extends AppCompatActivity {
     }
     private void startMainActivity() {
         Intent b=new Intent(ClassesActivity.this,MainActivity.class);
-
         setResult(RESULT_CANCELED,b);
         startActivity(b);
     }
-
-
 
     private boolean isTeacherFree(int teacherID){
         for (Class currentClass : peopleDAO.school.listClasses) {
@@ -184,7 +177,7 @@ public class ClassesActivity extends AppCompatActivity {
         else {
             for (Learner learner : learnersList) {
                 result.append(++count).append(")").append(" Name: ").append(learner.getFullName()).append(" ID: ").append(learner.getCardID());
-                result.append(" ");
+                result.append(" | ");
             }
         }
         return result.toString();
@@ -236,7 +229,7 @@ public class ClassesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_classes);
         this.buttonNewClass = (Button) findViewById(R.id.buttonNewClass);
         defineDialogElements();
-        // defineSearchSystem();
+        defineSearchSystem();
         defineListView();
         defineButtonsListeners();
     }
@@ -261,6 +254,7 @@ public class ClassesActivity extends AppCompatActivity {
                 else {
                     if (isLearnerFree(currentLearner.getCardID())) {
                         findClassToAddLeanerByNameAndAddLearner(currentLearner);
+                        Toast.makeText(this, "Learner added", Toast.LENGTH_SHORT).show();
                     }
                     else informLearnerIsNotFree();
                 }

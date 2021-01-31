@@ -90,7 +90,7 @@ public class PersonsActivity extends AppCompatActivity {
     }
     private boolean isCorrectInput(String id){
         if(id.matches("[0-9]+")) {
-                return Integer.parseInt(id) >= School.num_of_cards ||
+                return Integer.parseInt(id) >= peopleDAO.PEOPLE_COUNT||
                     Integer.parseInt(id) > 0;
         }
         return false;
@@ -105,52 +105,34 @@ public class PersonsActivity extends AppCompatActivity {
         searchBoard.setHint("no person with this id");
         searchBoard.setHintTextColor(Color.RED);
     }
-//    private void checkTeacherWithID(int id) {
-//        for (int i = 0; i < school.teachers.length; i++) {
-//            if (school.teachers[i] == null) informThereIsNoPerson();
-//            else if (school.teachers[i].CardID == id){
-//                setDialogTeacherAttributes(school.teachers[i]);
-//                dialogTeacher.show();
-//                break;
-//            }
-//
-//        }
-//    }
-//    private void checkLearnerWithID(int id) {
-//        for (int i = 0; i < school.learners.length; i++) {
-//                if (school.learners[i] == null) {
-//                    checkTeacherWithID(id);
-//                }else if (school.learners[i].CardID == id){
-//                    setDialogLearnerAttributes(school.learners[i]);
-//                    dialogLearner.show();
-//                    break;
-//                }
-//
-//        }
-//    }
-//    private void checkEmployeeWithID(int id){
-//        for (int i = 0; i < school.employees.length; i++) {
-//            if (school.employees[i] == null) {
-//                checkLearnerWithID(id);
-//            } else if (school.employees[i].CardID == id) {
-//                setDialogEmployeeAttributes(school.employees[i]);
-//                dialogEmployee.show();
-//                break;
-//            }
-//        }
-//    }
-//    private void defineSearchSystemButtonListener(){
-//        searchButton.setOnClickListener(v -> {
-//            if(isCorrectInput(searchBoard.getText().toString())){
-//                checkEmployeeWithID(Integer.parseInt(searchBoard.getText().toString()));
-//            } else informWrongInput();
-//        });
-//    }
-//    private void defineSearchSystem(){
-//        searchButton =(ImageButton)findViewById(R.id.searchButton);
-//        searchBoard=(EditText)findViewById(R.id.searchBoardPersons);
-//        defineSearchSystemButtonListener();
-//    }
+    private void findParticipantByID(int id){
+        switch(peopleDAO.findParticipantsStatusByID(id)){
+            case "EMPLOYEE":
+                setDialogEmployeeAttributes(peopleDAO.findEmployeeByID(id));
+                dialogEmployee.show();
+                break;
+            case "LEARNER":
+                setDialogLearnerAttributes(peopleDAO.findLearnerByID(id));
+                dialogLearner.show();
+                break;
+            case "TEACHER":
+                setDialogTeacherAttributes(peopleDAO.findTeacherByID(id));
+                dialogTeacher.show();
+                break;
+        }
+    }
+    private void defineSearchSystemButtonListener(){
+        searchButton.setOnClickListener(v -> {
+            if(isCorrectInput(searchBoard.getText().toString())){
+               findParticipantByID(Integer.parseInt(searchBoard.getText().toString()));
+            } else informWrongInput();
+        });
+    }
+    private void defineSearchSystem(){
+        searchButton =(ImageButton)findViewById(R.id.searchButton);
+        searchBoard=(EditText)findViewById(R.id.searchBoardPersons);
+        defineSearchSystemButtonListener();
+    }
 
 
 
@@ -199,8 +181,7 @@ public class PersonsActivity extends AppCompatActivity {
     }
     private void defineButtons(){
         defineButtonNewPerson();
-
-//        defineSearchSystem();
+        defineSearchSystem();
         defineDialogs();
         }
 
@@ -294,6 +275,8 @@ public class PersonsActivity extends AppCompatActivity {
     private void getPeopleDao(){
         Intent mIntent = getIntent();
         peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
+        peopleDAO.setDbHelper(new DBHelper(this));
+        peopleDAO.createDatabase();
     }
     @SuppressLint("SetTextI18n")
         @Override

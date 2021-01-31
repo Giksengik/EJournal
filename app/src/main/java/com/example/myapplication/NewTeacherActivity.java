@@ -18,9 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class NewTeacherActivity extends AppCompatActivity {
-    private School school;
     private String [] qualifications = new String[12];
-    private final String FILE_TEACHERS="teachers";
     private Button buttonConfirm;
     private CheckBox checkBoxMath;
     private CheckBox checkBoxPhysics;
@@ -120,19 +118,15 @@ public class NewTeacherActivity extends AppCompatActivity {
 
     private void putNewTeacherToSchool(){
         peopleDAO.school.listTeachers.add(new Teacher(teacherName.getText().toString(), teacherPhone.getText().toString(),
-
                 peopleDAO.PEOPLE_COUNT,teacherPosition.getText().toString(),getQualificationsInOneLine()));
     }
     private void defineConfirmButtonListener(){
-        buttonConfirm.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SetTextI18n")
-            @Override
-            public void onClick(View v) {
-                if(isCorrectInput()){
-                    saveNewTeacherInDataBase();
-                    putNewTeacherToSchool();
-                    startMainActivityWithResult();
-                }
+        buttonConfirm.setOnClickListener(v -> {
+            if(isCorrectInput()){
+                saveNewTeacherInDataBase();
+                Toast.makeText(this, "Teacher is created", Toast.LENGTH_SHORT).show();
+                putNewTeacherToSchool();
+                startMainActivityWithResult();
             }
         });
     }
