@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -22,6 +23,7 @@ public class NewLearnerActivity extends AppCompatActivity {
     private EditText learnersName;
     private EditText learnersPhone;
     private Button confirmButton;
+    private PeopleDAO peopleDAO;
     final String FILE_LEARNERS= "learners";
     private void defineElements(){
         parentsName1=(EditText) findViewById(R.id.editTextNewLearner1);
@@ -64,7 +66,7 @@ public class NewLearnerActivity extends AppCompatActivity {
     }
     private void startMainActivityWithResult(){
         Intent i=new Intent(NewLearnerActivity.this,MainActivity.class);
-        i.putExtra("school",school);
+        i.putExtra("peopleDAO", peopleDAO);
         setResult(RESULT_CANCELED,i);
         startActivity(i);
     }
@@ -99,70 +101,34 @@ public class NewLearnerActivity extends AppCompatActivity {
     private void defineConfirmButtonListener(){
         confirmButton.setOnClickListener(v -> {
             if(isCorrectInput()){
-                makeLearner();
+                saveNewLearnerInDataBase();
+                putNewLearnerInSchool();
                 startMainActivityWithResult();
             }
         });
     }
-    private void writeNewLearnerToFile(){
-        FileOutputStream fos = null;
-        try {
-            fos = openFileOutput(FILE_LEARNERS, MODE_APPEND);
-            fos.write((School.num_of_cards+"").getBytes());
-            fos.write("\n".getBytes());
-            fos.write(parentsName1.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(parentsPhone1.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(parentsName2.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(parentsPhone2.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(learnersName.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(learnersPhone.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write("----------".getBytes());
-            fos.write("\n".getBytes());
-            Toast.makeText(this, "Learner added", Toast.LENGTH_SHORT).show();
-        } catch (IOException ex) {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException ex) {
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }
+    private void saveNewLearnerInDataBase(){
+        peopleDAO.createDatabase();
+        peopleDAO.database.insert(DBHelper.TABLE_PARTICIPANTS, null ,
+                peopleDAO.makeContentValueForLearner(learnersName.getText().toString(),learnersPhone.getText().toString(),
+                        parentsName1.getText().toString(),parentsPhone1.getText().toString(),parentsName2.getText().toString(),
+                        parentsPhone2.getText().toString()));
     }
-    private void putNewLearnerToSchool(){
-        Parent parent1=new Parent(parentsName1.getText().toString(),parentsPhone1.getText().toString());
-        Parent parent2=new Parent(parentsName2.getText().toString(),parentsPhone2.getText().toString());
-        Parent [] parents ={parent1,parent2};
-        Learner learner = new Learner(learnersName.getText().toString(),learnersPhone.getText().toString(),School.num_of_cards,parents);
-        School.num_of_cards++;
-        for(int i=0;i<school.learners.length;i++){
-            if(school.learners[i]==null){
-                school.learners[i]=learner;
-                break;
-            }
-        }
+    private void putNewLearnerInSchool(){
+        peopleDAO.school.listLearners.add(new Learner(learnersName.getText().toString(),learnersPhone.getText().toString(),
+                peopleDAO.PEOPLE_COUNT, new Parent[] {new Parent( parentsName1.getText().toString(),parentsPhone1.getText().toString()),
+                new Parent (parentsName2.getText().toString(),parentsPhone2.getText().toString())}));
     }
-    private void makeLearner(){
-        writeNewLearnerToFile();
-        putNewLearnerToSchool();
-    }
-    private void defineSchool() {
+    private void getPeopleDao(){
         Intent mIntent = getIntent();
-        school=(School)mIntent.getSerializableExtra("school");
+        peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
+        peopleDAO.setDbHelper(new DBHelper(this));
     }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_learner_activity);
-        defineSchool();
+        getPeopleDao();
         defineElements();
 
 }

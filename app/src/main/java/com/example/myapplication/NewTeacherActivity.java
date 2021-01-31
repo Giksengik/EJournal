@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -37,11 +38,7 @@ public class NewTeacherActivity extends AppCompatActivity {
     private EditText teacherName;
     private EditText teacherPosition;
     private EditText teacherPhone;
-    private void defineSchool(){
-        Intent mIntent = getIntent();
-        school =(School)mIntent.getSerializableExtra("school");
-
-    }
+    private PeopleDAO peopleDAO;
     private void informWrongName(){
         teacherName.setText("");
         teacherName.setHint("wrong input");
@@ -116,66 +113,15 @@ public class NewTeacherActivity extends AppCompatActivity {
     }
     private void startMainActivityWithResult() {
         Intent i=new Intent(NewTeacherActivity.this,MainActivity.class);
-        i.putExtra("school",school);
         setResult(RESULT_CANCELED,i);
+        i.putExtra("peopleDAO", peopleDAO);
         startActivity(i);
     }
-    private void writeNewTeacherQualificationsToFile(FileOutputStream fos) throws IOException {
-        int i=0;
-        while(i<12){
-            if (qualifications[i]==null) {
-                fos.write("----------".getBytes());
-                fos.write("\n".getBytes());
-                break;
-            }
-            fos.write(qualifications[i].getBytes());
-            fos.write("\n".getBytes());
-            if(i==11){
-                fos.write("----------".getBytes());
-                fos.write("\n".getBytes());
-            }
-            i++;
-        }
-    }
-    private void writeNewTeacherToFile(){
-        FileOutputStream fos = null;
-        try {
-            fos = openFileOutput(FILE_TEACHERS, MODE_APPEND);
-            fos.write((School.num_of_cards+"").getBytes());
-            fos.write("\n".getBytes());
-            fos.write(teacherName.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(teacherPhone.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(teacherPosition.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            writeNewTeacherQualificationsToFile(fos);
-        } catch (IOException ex) {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException ex) {
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
+
     private void putNewTeacherToSchool(){
-        Teacher teacher =new Teacher(teacherName.getText().toString(),teacherPhone.getText().toString(),School.num_of_cards,
-                teacherPosition.getText().toString(),qualifications);
-        School.num_of_cards++;
-        for(int i=0;i<school.teachers.length;i++){
-            if(school.teachers[i]==null){
-                school.teachers[i]=teacher;
-                break;
-            }
-        }
-    }
-    private void makeTeacher(){
-        writeNewTeacherToFile();
-        putNewTeacherToSchool();
-        Toast.makeText(this, "Teacher added", Toast.LENGTH_SHORT).show();
+        peopleDAO.school.listTeachers.add(new Teacher(teacherName.getText().toString(), teacherPhone.getText().toString(),
+
+                peopleDAO.PEOPLE_COUNT,teacherPosition.getText().toString(),getQualificationsInOneLine()));
     }
     private void defineConfirmButtonListener(){
         buttonConfirm.setOnClickListener(new View.OnClickListener() {
@@ -183,7 +129,8 @@ public class NewTeacherActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(isCorrectInput()){
-                    makeTeacher();
+                    saveNewTeacherInDataBase();
+                    putNewTeacherToSchool();
                     startMainActivityWithResult();
                 }
             }
@@ -217,12 +164,32 @@ public class NewTeacherActivity extends AppCompatActivity {
         teacherPhone = (EditText) findViewById(R.id.editTextNewTeacher3);
         defineConfirmButtonListener();
     }
-
+    private void saveNewTeacherInDataBase(){
+        peopleDAO.createDatabase();
+        peopleDAO.database.insert(DBHelper.TABLE_PARTICIPANTS, null ,
+                peopleDAO.makeContentValueForTeacher(teacherName.getText().toString(), teacherPhone.getText().toString(),
+                        teacherPosition.getText().toString(),getQualificationsInOneLine()));
+    }
+    private void getPeopleDao(){
+        Intent mIntent = getIntent();
+        peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
+        peopleDAO.setDbHelper(new DBHelper(this));
+    }
+    private String getQualificationsInOneLine(){
+        StringBuilder qualificationsInOneLine = new StringBuilder();
+        for (int i = 0; i < 12 ; i++){
+            if(i == 0) qualificationsInOneLine.append(qualifications[i]);
+        if(qualifications[i+1] == null || i == 11) return qualificationsInOneLine.toString()+".";
+            else qualificationsInOneLine.append(", ");
+        }
+        return qualificationsInOneLine.toString();
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.add_teacher_activity);
-        defineSchool();
+        getPeopleDao();
+
         defineElements();
     }
 }

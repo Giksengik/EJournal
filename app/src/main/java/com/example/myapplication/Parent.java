@@ -6,4 +6,7 @@ public class Parent extends Person implements Serializable {
     Parent(String fullName, String phone) {
         super(fullName, phone);
     }
+
+    public Parent() {
+    }
 }

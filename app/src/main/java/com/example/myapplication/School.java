@@ -1,18 +1,19 @@
 package com.example.myapplication;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public class School implements Serializable {
-    public Employee [] employees;
-    public Teacher [] teachers;
-    public Learner [] learners;
+    public ArrayList <Employee> listEmployees;
+    public ArrayList <Teacher>  listTeachers;
+    public ArrayList <Learner>  listLearners;
     public String address;
     public String name;
     public static int num_of_cards=1;
     public static int num_of_classes=0;
-    public Class [] classes;
-    public Elective [] electives;
-    public Section [] sections;
+    public ArrayList <Class> listClasses;
+    public ArrayList <Elective> listElectives;
+    public ArrayList <Section> listSections;
     public void getListTeachers(){
 
     }
@@ -28,15 +29,13 @@ public class School implements Serializable {
     public void getParticipant(){
 
     }
-    School(Employee [] employees,Teacher [] teachers,Learner [] learners,String address,
-           String name, Class [] classes,Elective [] electives ,Section[] sections){
-        this.employees=employees;
-        this.teachers=teachers;
-        this.learners=learners;
-        this.address=address;
-        this.name=name;
-        this.classes=classes;
-        this.electives=electives;
-        this.sections=sections;
+
+    public School(){
+        this.listEmployees= new ArrayList<>();
+        this.listTeachers=new ArrayList<>();
+        this.listLearners=new ArrayList<>();
+        this.listClasses=new ArrayList<>();
+        this.listElectives = new ArrayList<>();
+        this.listSections = new ArrayList<>();
     }
 }

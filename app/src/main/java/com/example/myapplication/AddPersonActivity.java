@@ -9,30 +9,29 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class AddPersonActivity extends AppCompatActivity {
-    School school;
-    View.OnClickListener listener;
-    Button buttonNewLearner;
-    Button buttonNewEmployee;
-    Button buttonNewTeacher;
-
+    private View.OnClickListener listener;
+    private Button buttonNewLearner;
+    private Button buttonNewEmployee;
+    private Button buttonNewTeacher;
+    private PeopleDAO peopleDAO;
     private void startNewEmployeeActivity() {
         Intent i;
         i = new Intent(AddPersonActivity.this, NewEmployeeActivity.class);
-        i.putExtra("school", school);
+        i.putExtra("peopleDAO", peopleDAO);
         startActivity(i);
     }
 
     private void startNewLearnerActivity() {
         Intent i;
         i = new Intent(AddPersonActivity.this, NewLearnerActivity.class);
-        i.putExtra("school", school);
+        i.putExtra("peopleDAO", peopleDAO);
         startActivity(i);
     }
 
     private void startNewTeacherActivity() {
         Intent i;
         i = new Intent(AddPersonActivity.this, NewTeacherActivity.class);
-        i.putExtra("school", school);
+        i.putExtra("peopleDAO", peopleDAO);
         startActivity(i);
     }
 
@@ -62,21 +61,15 @@ public class AddPersonActivity extends AppCompatActivity {
         buttonNewLearner.setOnClickListener(listener);
         buttonNewTeacher.setOnClickListener(listener);
     }
+    private void getPeopleDao(){
 
-    ;
-
-    private void defineSchool() {
-        Intent mIntent = getIntent();
-        school = (School) mIntent.getSerializableExtra("school");
     }
-
-    ;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_person_activity);
-        defineSchool();
+        Intent mIntent = getIntent();
+        peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
         defineButtons();
     }
 }

@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -15,17 +16,11 @@ import java.io.IOException;
 
 public class NewEmployeeActivity extends AppCompatActivity {
     final String FILE_EMPLOYEES = "employees";
-    private School school;
     private Button buttonConfirm;
     private EditText employeeName;
     private EditText employeePhone;
     private EditText employeePosition;
-
-    private void defineSchool() {
-        Intent mIntent = getIntent();
-        school = (School) mIntent.getSerializableExtra("school");
-        setContentView(R.layout.add_employee_activity);
-    }
+    private PeopleDAO peopleDAO;
     private void informWrongInputName() {
         employeeName.setText("");
         employeeName.setHint("wrong input");
@@ -43,55 +38,15 @@ public class NewEmployeeActivity extends AppCompatActivity {
         employeePosition.setHintTextColor(Color.RED);
         employeePosition.setText("");
     }
-
-    ;
-
     private void startMainActivityWithResult() {
         Intent i = new Intent(NewEmployeeActivity.this, MainActivity.class);
-        i.putExtra("school", school);
+        i.putExtra("peopleDAO", peopleDAO);
         setResult(RESULT_CANCELED, i);
         startActivity(i);
     }
-    private void writeNewLearnerToFile(){
-        FileOutputStream fos = null;
-        try {
-            fos = openFileOutput(FILE_EMPLOYEES, MODE_APPEND);
-            fos.write((School.num_of_cards+"").getBytes());
-            fos.write("\n".getBytes());
-            fos.write(employeeName.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(employeePhone.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write(employeePosition.getText().toString().getBytes());
-            fos.write("\n".getBytes());
-            fos.write("----------".getBytes());
-            fos.write("\n".getBytes());
-        } catch (IOException ex) {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-        } finally {
-            try {
-                if (fos != null)
-                    fos.close();
-            } catch (IOException ex) {
-                Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-    private void putNewLearnerToSchool() {
-        for (int i = 0; i < school.employees.length; i++) {
-            if (school.employees[i] == null) {
-                school.employees[i] = new Employee
-                        (employeeName.getText().toString(), employeePhone.getText().toString(), School.num_of_cards,
-                                employeePosition.getText().toString());
-                School.num_of_cards++;
-                break;
-            }
-        }
-    }
-    private void makeEmployee() {
-        writeNewLearnerToFile();
-        putNewLearnerToSchool();
-        Toast.makeText(this, "Employee added", Toast.LENGTH_SHORT).show();
+    private void putNewEmployeeToSchool() {
+        peopleDAO.school.listEmployees.add(new Employee(employeeName.getText().toString(), employeePhone.getText().toString(),
+                peopleDAO.PEOPLE_COUNT, employeePosition.getText().toString()));
     }
 
     private void defineButtonConfirmListener() {
@@ -102,7 +57,8 @@ public class NewEmployeeActivity extends AppCompatActivity {
             if (StringValidation.isCorrectString(name)) {
                 if (StringValidation.isCorrectPhoneNumber(phone)) {
                     if (StringValidation.isCorrectString(position)) {
-                        makeEmployee();
+                        saveNewEmployeeInDataBase();
+                        putNewEmployeeToSchool();
                         startMainActivityWithResult();
                     } else informWrongInputPosition();
                 } else informWrongInputPhone();
@@ -117,11 +73,22 @@ public class NewEmployeeActivity extends AppCompatActivity {
         employeePosition = findViewById(R.id.editTextNewEmployee3);
         defineButtonConfirmListener();
     }
-
+    private void saveNewEmployeeInDataBase(){
+        peopleDAO.createDatabase();
+        peopleDAO.database.insert(DBHelper.TABLE_PARTICIPANTS, null ,
+                peopleDAO.makeContentValueForEmployee(employeeName.getText().toString()
+                , employeePhone.getText().toString(), employeePosition.getText().toString()));
+    }
+    private void getPeopleDao(){
+        Intent mIntent = getIntent();
+        peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
+        peopleDAO.setDbHelper(new DBHelper(this));
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        defineSchool();
+        setContentView(R.layout.add_employee_activity);
+        getPeopleDao();
         defineElements();
 
 

@@ -14,9 +14,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.Serializable;
+
 
 public class PersonsActivity extends AppCompatActivity {
-    private School school;
+    private transient PeopleDAO peopleDAO;
     private Dialog dialogEmployee;
     private Dialog dialogLearner;
     private Dialog dialogTeacher;
@@ -44,9 +46,6 @@ public class PersonsActivity extends AppCompatActivity {
     private TextView teacherQualifications ;
     private TextView teacherPosition;
     private Button cancelInfoTeacher;
-    private int numEmployees=0;
-    private int numTeachers=0;
-    private int numLearners=0;
     private ListView lvMain;
     String [] persons;
     private void defineEmployeeDialog(){
@@ -106,155 +105,139 @@ public class PersonsActivity extends AppCompatActivity {
         searchBoard.setHint("no person with this id");
         searchBoard.setHintTextColor(Color.RED);
     }
-    private void checkTeacherWithID(int id) {
-        for (int i = 0; i < school.teachers.length; i++) {
-            if (school.teachers[i] == null) informThereIsNoPerson();
-            else if (school.teachers[i].CardID == id){
-                setDialogTeacherAttributes(school.teachers[i]);
-                dialogTeacher.show();
-                break;
-            }
+//    private void checkTeacherWithID(int id) {
+//        for (int i = 0; i < school.teachers.length; i++) {
+//            if (school.teachers[i] == null) informThereIsNoPerson();
+//            else if (school.teachers[i].CardID == id){
+//                setDialogTeacherAttributes(school.teachers[i]);
+//                dialogTeacher.show();
+//                break;
+//            }
+//
+//        }
+//    }
+//    private void checkLearnerWithID(int id) {
+//        for (int i = 0; i < school.learners.length; i++) {
+//                if (school.learners[i] == null) {
+//                    checkTeacherWithID(id);
+//                }else if (school.learners[i].CardID == id){
+//                    setDialogLearnerAttributes(school.learners[i]);
+//                    dialogLearner.show();
+//                    break;
+//                }
+//
+//        }
+//    }
+//    private void checkEmployeeWithID(int id){
+//        for (int i = 0; i < school.employees.length; i++) {
+//            if (school.employees[i] == null) {
+//                checkLearnerWithID(id);
+//            } else if (school.employees[i].CardID == id) {
+//                setDialogEmployeeAttributes(school.employees[i]);
+//                dialogEmployee.show();
+//                break;
+//            }
+//        }
+//    }
+//    private void defineSearchSystemButtonListener(){
+//        searchButton.setOnClickListener(v -> {
+//            if(isCorrectInput(searchBoard.getText().toString())){
+//                checkEmployeeWithID(Integer.parseInt(searchBoard.getText().toString()));
+//            } else informWrongInput();
+//        });
+//    }
+//    private void defineSearchSystem(){
+//        searchButton =(ImageButton)findViewById(R.id.searchButton);
+//        searchBoard=(EditText)findViewById(R.id.searchBoardPersons);
+//        defineSearchSystemButtonListener();
+//    }
 
-        }
+
+
+    @SuppressLint("SetTextI18n")
+    private void setDialogEmployeeAttributes(Employee employeeToSee) {
+        nameEmployee.setText("Full name: "+employeeToSee.getFullName());
+        cardIdEmployee.setText("Card ID: "+employeeToSee.getCardID());
+        phoneEmployee.setText("Phone: "+employeeToSee.getPhone());
+        positionEmployee.setText("Position: "+employeeToSee.getPosition());
     }
-    private void checkLearnerWithID(int id) {
-        for (int i = 0; i < school.learners.length; i++) {
-                if (school.learners[i] == null) {
-                    checkTeacherWithID(id);
-                }else if (school.learners[i].CardID == id){
-                    setDialogLearnerAttributes(school.learners[i]);
-                    dialogLearner.show();
+
+
+
+    @SuppressLint("SetTextI18n")
+    private void setDialogLearnerAttributes(Learner learnerToSee) {
+        nameLearner.setText("Learner's full name: "+learnerToSee.getFullName());
+        cardIdLearner.setText("Learner's Card ID: "+learnerToSee.getCardID());
+        phoneLearner.setText("Learner's phone: "+learnerToSee.getPhone());
+        firstParentName.setText("First parent's name: "+learnerToSee.getParents()[0].getFullName());
+        firstParentPhone.setText("First parent's phone: "+learnerToSee.getParents()[0].getPhone());
+        secondParentName.setText("Second parent's name: "+learnerToSee.getParents()[1].getFullName());
+        secondParentPhone.setText("Second parent's phone: " +learnerToSee.getParents()[0].getPhone());
+    }
+
+    @SuppressLint("SetTextI18n")
+    private void setDialogTeacherAttributes(Teacher teacherToSee){
+        teacherCardId.setText("Card ID: "+teacherToSee.getCardID());
+        teacherName.setText("Full name: "+teacherToSee.getFullName());
+        teacherPhone.setText("Phone: "+teacherToSee.getPhone());
+        teacherPosition.setText("Position: "+teacherToSee.getPosition());
+        teacherQualifications.setText("Qualifications: "+teacherToSee.getQualifications());
+    }
+
+    private void startAddPersonActivity(){
+        Intent i;
+        i = new Intent(PersonsActivity.this, AddPersonActivity.class);
+        i.putExtra("peopleDAO", peopleDAO);
+        startActivity(i);
+    }
+    private void  defineButtonAddPersonListener () {
+        buttonAddPerson.setOnClickListener(v -> startAddPersonActivity());
+    }
+    private void defineButtonNewPerson () {
+        buttonAddPerson = (Button) findViewById(R.id.buttonAddPerson);
+        defineButtonAddPersonListener();
+    }
+    private void defineButtons(){
+        defineButtonNewPerson();
+
+//        defineSearchSystem();
+        defineDialogs();
+        }
+
+    private void defineListView(){
+        persons = getAllPeople();
+        lvMain = (ListView)findViewById(R.id.listViewPersons);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+                persons);
+        lvMain.setAdapter(adapter);
+        setListViewListener();
+    }
+        private String [] getAllPeople(){
+        persons = new String[peopleDAO.PEOPLE_COUNT];
+
+        for(int i = 0; i < peopleDAO.PEOPLE_COUNT; i ++){
+            for(int j = 0; j < peopleDAO.getEmployeeListLength(); j ++){
+                if(peopleDAO.getSchool().listEmployees.get(j).getCardID() == i + 1){
+                    persons[i]="Employee  | Card ID:"+(i+1)+" | Full Name:"+peopleDAO.getSchool().listEmployees.get(j).getFullName();
                     break;
                 }
-
-        }
-    }
-    private void checkEmployeeWithID(int id){
-        for (int i = 0; i < school.employees.length; i++) {
-            if (school.employees[i] == null) {
-                checkLearnerWithID(id);
-            } else if (school.employees[i].CardID == id) {
-                setDialogEmployeeAttributes(school.employees[i]);
-                dialogEmployee.show();
-                break;
             }
-        }
-    }
-    private void defineSearchSystemButtonListener(){
-        searchButton.setOnClickListener(v -> {
-            if(isCorrectInput(searchBoard.getText().toString())){
-                checkEmployeeWithID(Integer.parseInt(searchBoard.getText().toString()));
-            } else informWrongInput();
-        });
-    }
-    private void defineSearchSystem(){
-        searchButton =(ImageButton)findViewById(R.id.searchButton);
-        searchBoard=(EditText)findViewById(R.id.searchBoardPersons);
-        defineSearchSystemButtonListener();
-    }
-    private void defineSchool(){
-        Intent mIntent = getIntent();
-        school=(School)mIntent.getSerializableExtra("school");
-    }
-    private String [] getAllPeople(){
-        persons = new String[School.num_of_cards-1];
-        for(int i=0;i<School.num_of_cards-1;i++){
-            for(int j=0;j<numEmployees;j++){
-                if(school.employees[j].CardID == i+1){
-                    persons[i]="Employee  | Card ID:"+(i+1)+" | Full Name:"+school.employees[j].fullName;
+            for(int j = 0; j < peopleDAO.getLearnerListLength(); j ++){
+                if(peopleDAO.getSchool().listLearners.get(j).getCardID() == i + 1){
+                    persons[i]="Learner      | Card ID:"+(i+1)+" | Full Name:" + peopleDAO.getSchool().listLearners.get(j).getFullName();
+                    break;
                 }
             }
-            for(int j=0;j<numLearners;j++){
-                if(school.learners[j].CardID==i+1){
-                    persons[i]="Learner      | Card ID:"+(i+1)+" | Full Name:"+school.learners[j].fullName;
-                }
-            }
-            for(int j=0;j<numTeachers;j++){
-                if(school.teachers[j].CardID==i+1){
-                    persons[i]="Teacher     | Card ID:"+(i+1)+" | Full Name:"+school.teachers[j].fullName;
+            for(int j = 0; j < peopleDAO.getTeacherListLength() ; j ++){
+                if(peopleDAO.getSchool().listTeachers.get(j).getCardID() == i + 1){
+                    persons[i]="Teacher     | Card ID:"+(i+1)+" | Full Name:" + peopleDAO.getSchool().listTeachers.get(j).getFullName();
+                    break;
                 }
             }
         }
         return persons;
     }
-    private Employee findEmployeeByPosition(int position) {
-        for(int i=0;i<school.employees.length;i++){
-            if(school.employees[i].CardID==position+1){
-                return school.employees[i];
-            }
-        }
-        return null;
-    }
-    @SuppressLint("SetTextI18n")
-    private void setDialogEmployeeAttributes(Employee employeeToSee) {
-        nameEmployee.setText("Full name: "+employeeToSee.fullName);
-        cardIdEmployee.setText("Card ID: "+employeeToSee.CardID);
-        phoneEmployee.setText("Phone: "+employeeToSee.phone);
-        positionEmployee.setText("Position: "+employeeToSee.position);
-    }
-
-    private void showEmployeeDialog(int position){
-        Employee employeeToSee = findEmployeeByPosition(position);
-        if(employeeToSee !=  null) setDialogEmployeeAttributes(employeeToSee);
-        dialogEmployee.show();
-    }
-    private Learner findLearnerByPosition(int position){
-        for(int i=0;i<school.learners.length;i++) {
-            if (school.learners[i].CardID == position + 1) {
-                return school.learners[i];
-            }
-        }
-        return null;
-    }
-    @SuppressLint("SetTextI18n")
-    private void setDialogLearnerAttributes(Learner learnerToSee) {
-        nameLearner.setText("Learner's full name: "+learnerToSee.CardID);
-        cardIdLearner.setText("Learner's Card ID: "+learnerToSee.CardID);
-        phoneLearner.setText("Learner's phone: "+learnerToSee.phone);
-        firstParentName.setText("First parent's name: "+learnerToSee.parents[0].fullName);
-        firstParentPhone.setText("First parent's phone: "+learnerToSee.parents[0].phone);
-        secondParentName.setText("Second parent's name: "+learnerToSee.parents[1].fullName);
-        secondParentPhone.setText("Second parent's phone: " +learnerToSee.parents[1].phone);
-    }
-    private void showLearnerDialog(int position){
-        Learner learnerToSee = findLearnerByPosition(position);
-        if (learnerToSee != null) setDialogLearnerAttributes(learnerToSee);
-        dialogLearner.show();
-    }
-    private Teacher findTeacherByPosition(int position){
-        for(int i=0;i<school.teachers.length;i++){
-            if(school.teachers[i].CardID == position + 1){
-                return school.teachers[i];
-            }
-        }
-        return null;
-    }
-    private String getQualifications(Teacher teacherToSee){
-        StringBuilder qualifications = new StringBuilder();
-        for(int i=0;i<teacherToSee.qualifications.length;i++){
-            qualifications.append(teacherToSee.qualifications[i]);
-            if(i!=teacherToSee.qualifications.length-1) {
-                qualifications.append(", ");
-            }else{
-                qualifications.append(".");
-            }
-        }
-        return qualifications.toString();
-    }
-    @SuppressLint("SetTextI18n")
-    private void setDialogTeacherAttributes(Teacher teacherToSee){
-        teacherCardId.setText("Card ID: "+teacherToSee.CardID);
-        teacherName.setText("Full name: "+teacherToSee.fullName);
-        teacherPhone.setText("Phone: "+teacherToSee.phone);
-        teacherPosition.setText("Position: "+teacherToSee.position);
-        teacherQualifications.setText("Qualifications: "+getQualifications(teacherToSee));
-    }
-    private void showTeacherDialog(int position){
-        Teacher teacherToSee = findTeacherByPosition(position);
-        if(teacherToSee != null) setDialogTeacherAttributes(teacherToSee);
-        dialogTeacher.show();
-    }
-    private void setListViewListener(){
+        private void setListViewListener(){
         lvMain.setOnItemClickListener((parent, view, position, id) -> {
             switch(persons[position].charAt(0)){
                 case 'E':
@@ -269,76 +252,57 @@ public class PersonsActivity extends AppCompatActivity {
             }
         });
     }
-    private void defineListView(){
-        persons = getAllPeople();
-        lvMain = (ListView)findViewById(R.id.listViewPersons);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                persons);
-        lvMain.setAdapter(adapter);
-        setListViewListener();
+        private void showEmployeeDialog(int position){
+        Employee employeeToSee = findEmployeeByPosition(position);
+        if(employeeToSee !=  null) setDialogEmployeeAttributes(employeeToSee);
+        dialogEmployee.show();
     }
-    private void defineAmountOfEmployees(){
-        for(int i=0;i<school.employees.length;i++){
-            if(school.employees[i]==null){
-                break;
-            }else{
-                numEmployees++;
+        private void showLearnerDialog(int position){
+            Learner learnerToSee = findLearnerByPosition(position);
+        if (learnerToSee != null) setDialogLearnerAttributes(learnerToSee);
+        dialogLearner.show();
+    }
+        private void showTeacherDialog(int position){
+        Teacher teacherToSee = findTeacherByPosition(position);
+        if(teacherToSee != null) setDialogTeacherAttributes(teacherToSee);
+        dialogTeacher.show();
+    }
+        private Employee findEmployeeByPosition(int position) {
+        for(int i = 0; i < peopleDAO.getEmployeeListLength(); i++){
+            if(peopleDAO.getSchool().listEmployees.get(i).getCardID() == position + 1){
+                return peopleDAO.getSchool().listEmployees.get(i);
             }
         }
+        return null;
     }
-    private void defineAmountOfTeachers(){
-        for(int i=0;i<school.teachers.length;i++){
-            if(school.teachers[i]==null){
-                break;
-            }else{
-                numTeachers++;
+        private Learner findLearnerByPosition(int position){
+        for(int i = 0; i < peopleDAO.getLearnerListLength(); i ++) {
+            if (peopleDAO.getSchool().listLearners.get(i).getCardID() == position + 1) {
+                return peopleDAO.getSchool().listLearners.get(i);
             }
         }
+        return null;
     }
-    private void defineAmountOfLearners(){
-        for(int i=0;i<school.learners.length;i++){
-            if(school.learners[i]==null){
-                break;
-            }else{
-                numLearners++;
+        private Teacher findTeacherByPosition(int position){
+        for(int i = 0; i < peopleDAO.getTeacherListLength(); i ++){
+            if(peopleDAO.getSchool().listTeachers.get(i).getCardID() == position + 1){
+                return peopleDAO.getSchool().listTeachers.get(i);
             }
         }
+        return null;
     }
-    private void defineAmountOfPeople(){
-        defineAmountOfEmployees();
-        defineAmountOfTeachers();
-        defineAmountOfLearners();
-    }
-    private void startAddPersonActivity(){
-        Intent i;
-        i = new Intent(PersonsActivity.this, AddPersonActivity.class);
-        i.putExtra("school",school);
-        startActivity(i);
-    }
-    private void  defineButtonAddPersonListener () {
-        buttonAddPerson.setOnClickListener(v -> startAddPersonActivity());
-    }
-    private void defineButtonNewPerson () {
-        buttonAddPerson= (Button)findViewById(R.id.buttonAddPerson);
-        defineButtonAddPersonListener();
-    }
-    private void defineButtons(){
-        defineButtonNewPerson();
-    }
-    private void defineElementsAndSetContentView(){
-        setContentView(R.layout.activity_persons);
-        defineSchool();
-        defineAmountOfPeople();
-        defineSearchSystem();
-        defineDialogs();
-        defineListView();
-        defineButtons();
+    private void getPeopleDao(){
+        Intent mIntent = getIntent();
+        peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
     }
     @SuppressLint("SetTextI18n")
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            defineElementsAndSetContentView();
+            setContentView(R.layout.activity_persons);
+            getPeopleDao();
+            defineListView();
+            defineButtons();
         }
     }
 
