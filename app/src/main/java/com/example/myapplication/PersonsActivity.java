@@ -13,8 +13,12 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class PersonsActivity extends AppCompatActivity {
@@ -46,8 +50,9 @@ public class PersonsActivity extends AppCompatActivity {
     private TextView teacherQualifications ;
     private TextView teacherPosition;
     private Button cancelInfoTeacher;
-    private ListView lvMain;
-    String [] persons;
+    private RecyclerView recyclerView;
+    private ParticipantAdapter.OnParticipantClickListener participantClickListener;
+    ArrayList<Participant> persons;
     private void defineEmployeeDialog(){
         dialogEmployee = new Dialog(PersonsActivity.this);
         dialogEmployee.setContentView(R.layout.info_employee);
@@ -186,52 +191,28 @@ public class PersonsActivity extends AppCompatActivity {
         }
 
     private void defineListView(){
-        persons = getAllPeople();
-        lvMain = (ListView)findViewById(R.id.listViewPersons);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                persons);
-        lvMain.setAdapter(adapter);
-        setListViewListener();
-    }
-        private String [] getAllPeople(){
-        persons = new String[peopleDAO.PEOPLE_COUNT];
+        persons = peopleDAO.getAllPeople();
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewPeople);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        setRecyclerViewListener();
+        ParticipantAdapter adapter =  new ParticipantAdapter(this, persons, participantClickListener);
+        recyclerView.setAdapter(adapter);
 
-        for(int i = 0; i < peopleDAO.PEOPLE_COUNT; i ++){
-            for(int j = 0; j < peopleDAO.getEmployeeListLength(); j ++){
-                if(peopleDAO.getSchool().listEmployees.get(j).getCardID() == i + 1){
-                    persons[i]="Employee  | Card ID:"+(i+1)+" | Full Name:"+peopleDAO.getSchool().listEmployees.get(j).getFullName();
-                    break;
-                }
-            }
-            for(int j = 0; j < peopleDAO.getLearnerListLength(); j ++){
-                if(peopleDAO.getSchool().listLearners.get(j).getCardID() == i + 1){
-                    persons[i]="Learner      | Card ID:"+(i+1)+" | Full Name:" + peopleDAO.getSchool().listLearners.get(j).getFullName();
-                    break;
-                }
-            }
-            for(int j = 0; j < peopleDAO.getTeacherListLength() ; j ++){
-                if(peopleDAO.getSchool().listTeachers.get(j).getCardID() == i + 1){
-                    persons[i]="Teacher     | Card ID:"+(i+1)+" | Full Name:" + peopleDAO.getSchool().listTeachers.get(j).getFullName();
-                    break;
-                }
-            }
-        }
-        return persons;
     }
-        private void setListViewListener(){
-        lvMain.setOnItemClickListener((parent, view, position, id) -> {
-            switch(persons[position].charAt(0)){
-                case 'E':
-                    showEmployeeDialog(position);
-                    break;
-                case 'L':
-                    showLearnerDialog(position);
-                    break;
-                case 'T':
-                    showTeacherDialog(position);
-                    break;
-            }
-        });
+        private void setRecyclerViewListener(){
+            participantClickListener = (participant, position) -> {
+                switch (participant.status){
+                    case "LEARNER":
+                        showLearnerDialog(position);
+                        break;
+                    case "TEACHER":
+                        showTeacherDialog(position);
+                        break;
+                    case "EMPLOYEE":
+                        showEmployeeDialog(position);
+                        break;
+                }
+            };
     }
         private void showEmployeeDialog(int position){
         Employee employeeToSee = findEmployeeByPosition(position);
@@ -266,6 +247,7 @@ public class PersonsActivity extends AppCompatActivity {
     }
         private Teacher findTeacherByPosition(int position){
         for(int i = 0; i < peopleDAO.getTeacherListLength(); i ++){
+            int id = peopleDAO.getSchool().listTeachers.get(i).getCardID();
             if(peopleDAO.getSchool().listTeachers.get(i).getCardID() == position + 1){
                 return peopleDAO.getSchool().listTeachers.get(i);
             }

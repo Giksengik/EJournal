@@ -7,9 +7,11 @@ public class Employee extends Participant implements Serializable {
     Employee(String fullName, String phone, int CardID,String position) {
         super(fullName, phone, CardID);
         this.position=position;
+        this.status = "EMPLOYEE";
     }
 
     public Employee() {
+        this.status = "EMPLOYEE";
     }
 
     public String getPosition() {

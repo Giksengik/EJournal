@@ -24,16 +24,10 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 public class MainActivity extends AppCompatActivity {
-    final String LOG_TAG = "myLogs";
-    final String FILE_NAME_PERSONS = "filePersons";
     final String FILE_NAME_SCHOOL = "fileSchool";
     final String SCHOOL_NAME = "RTU MIREA";
     final String SCHOOL_ADDRESS = "Vernadsky prospect, 78, Moscow";
-    final String FILE_NAME_EMPLOYEE = "employees";
-    final String FILE_NAME_LEARNERS = "learners";
-    final String FILE_NAME_TEACHERS = "teachers";
-    final String FILE_NAME_CLASSES = "class";
-    private School school;
+
     private Intent result;
     private PeopleDAO peopleDAO;
 
@@ -167,14 +161,4 @@ public class MainActivity extends AppCompatActivity {
         defineSchool();
         defineElements();
     }
-
-
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        school = (School) data.getSerializableExtra("school");
-    }
-
 }

@@ -9,9 +9,11 @@ public class Teacher extends Participant implements Serializable {
         super(fullName, phone, CardID);
         this.position=position;
         this.qualifications=qualifications;
+        this.status = "TEACHER";
     }
 
     public Teacher() {
+        this.status = "TEACHER";
     }
 
     public String getPosition() {

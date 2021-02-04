@@ -30,6 +30,22 @@ public class PeopleDAO implements Serializable{
         contentValues.put(DBHelper.KEY_POSITION, position);
         return contentValues;
     }
+    public ArrayList<Participant> getAllPeople(){
+        @SuppressLint("Recycle") Cursor cursor = database.query(DBHelper.TABLE_PARTICIPANTS,
+                null,null,null,null,null,null);
+        ArrayList<Participant> participants = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+            do {
+                Participant currentParticipant = new Participant();
+                currentParticipant.setCardID(cursor.getInt(cursor.getColumnIndex(DBHelper.KEY_ID)));
+                currentParticipant.setFullName(cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME)));
+                currentParticipant.setStatus(cursor.getString(cursor.getColumnIndex(DBHelper.KEY_STATUS)));
+                participants.add(currentParticipant);
+            }
+            while (cursor.moveToNext());
+        }
+        return  participants;
+    }
     public ContentValues makeContentValueForLearner(String name, String phone, String firstParentName, String firstParentPhone, String secondParentName,
                                                      String secondParentPhone){
         contentValues = new ContentValues();
