@@ -50,7 +50,6 @@ public class PersonsActivity extends AppCompatActivity {
     private TextView teacherQualifications ;
     private TextView teacherPosition;
     private Button cancelInfoTeacher;
-    private RecyclerView recyclerView;
     private ParticipantAdapter.OnParticipantClickListener participantClickListener;
     ArrayList<Participant> persons;
     private void defineEmployeeDialog(){
@@ -191,7 +190,7 @@ public class PersonsActivity extends AppCompatActivity {
 
     private void defineListView(){
         persons = peopleDAO.getAllPeople();
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerViewPeople);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerViewPeople);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setRecyclerViewListener();
         ParticipantAdapter adapter =  new ParticipantAdapter(this, persons, participantClickListener);

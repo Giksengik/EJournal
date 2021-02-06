@@ -14,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
@@ -42,8 +44,7 @@ public class ClassesActivity extends AppCompatActivity {
     private Button buttonClassAddLearner;
     private PeopleDAO peopleDAO;
     private ClassesDAO classesDAO;
-    private String[] classesInListView;
-    private ListView lvMain;
+    private ClassesAdapter.OnClassClickListener classClickListener;
 
     private EditText searchBoardClasses;
     private ImageButton searchButton;
@@ -74,6 +75,7 @@ public class ClassesActivity extends AppCompatActivity {
         className.setText("Class name: " + currentClass.number);
         classTeacherId.setText("Class teacher's ID: " + currentClass.classTeacher.getCardID());
         classTeacherName.setText("Class teacher's name: " + currentClass.classTeacher.getFullName());
+        classLearners.setText(getLearnersStringForDialog(currentClass.learnersList));
     }
     @SuppressLint("SetTextI18n")
     void showClass(Class currentClass) {
@@ -182,31 +184,18 @@ public class ClassesActivity extends AppCompatActivity {
         }
         return result.toString();
     }
-    @SuppressLint("SetTextI18n")
-    private void defineListViewListener() {
-        lvMain.setOnItemClickListener((parent, view, position, id) -> {
-            className.setText("Class name: " + peopleDAO.school.listClasses.get(position).number);
-            classTeacherId.setText("Class teacher's ID: " + peopleDAO.school.listClasses.get(position).classTeacher.getCardID());
-            classTeacherName.setText("Class teacher's name: " + peopleDAO.school.listClasses.get(position).classTeacher.getFullName());
-            classLearners.setText(getLearnersStringForDialog(peopleDAO.school.listClasses.get(position).learnersList));
-            dialogClass.show();
-        });
-    }
-    private String [] getClassesInListView() {
-        String[] classesInListView = new String[peopleDAO.school.listClasses.size()];
-        int i = 0;
-        for (Class currentClass : peopleDAO.school.listClasses) {
-            classesInListView[i] = collectStringForListView(currentClass);
-            i++;
-        }
-        return classesInListView;
-    }
+
     private void defineListView() {
-        ArrayAdapter<String> adapterForListView = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1,
-                getClassesInListView());
-        lvMain = (ListView) findViewById(R.id.listViewClasses);
-        lvMain.setAdapter(adapterForListView);
-        defineListViewListener();
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerViewClasses);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        setRecyclerViewListener();
+        ClassesAdapter adapter =  new ClassesAdapter(this,peopleDAO.school.listClasses, classClickListener);
+        recyclerView.setAdapter(adapter);
+    }
+    private void setRecyclerViewListener(){
+        classClickListener = (currentClass, position) -> {
+            showClass(currentClass);
+        };
     }
     private void defineButtonOkNewClassListener(){
         buttonOkNewClass.setOnClickListener(v -> {
@@ -295,10 +284,6 @@ public class ClassesActivity extends AppCompatActivity {
         peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
         peopleDAO.setDbHelper(new DBHelper(this));
         peopleDAO.createDatabase();
-    }
-    private String collectStringForListView(Class currentClass) {
-        return ("Class: " + currentClass.number + " | Teacher's name: " + currentClass.classTeacher.getFullName() +
-                "| Teacher's ID: " + currentClass.classTeacher.getCardID());
     }
     private void getClassesDAO(){
         classesDAO = new ClassesDAO();
