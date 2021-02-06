@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="100dp"
+                    android:gravity="center"
+                    android:text="EJournal"
+                    android:textColor="#000000"
+                    android:textSize="30sp" />
+
+                <Button
+                    android:id="@+id/buttonPersons"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="50dp"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/mainMenuPersons"
+                    android:textColor="#000000" />
+
+                <Button
+                    android:id="@+id/buttonClasses"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/mainMenuClasses"
+                    android:textColor="#000000" />
+
+                <Button
+                    android:id="@+id/buttonElectives"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/mainMenuElectives"
+                    android:textColor="#000000" />
+
+                <Button
+                    android:id="@+id/buttonSections"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="15dp"
+                    android:text="@string/mainMenuSections"
+                    android:textColor="#000000" />
+
+                <TextView
+                    android:id="@+id/textSchoolName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="100dp"
+                    android:text=""
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/textSchoolAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="10dp"
+                    android:text=""
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+        </ScrollView>
+    </HorizontalScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

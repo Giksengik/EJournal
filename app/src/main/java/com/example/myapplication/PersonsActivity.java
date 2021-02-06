@@ -95,8 +95,7 @@ public class PersonsActivity extends AppCompatActivity {
     }
     private boolean isCorrectInput(String id){
         if(id.matches("[0-9]+")) {
-                return Integer.parseInt(id) >= peopleDAO.PEOPLE_COUNT||
-                    Integer.parseInt(id) > 0;
+                return Integer.parseInt(id) <= peopleDAO.PEOPLE_COUNT && Integer.parseInt(id) > 0;
         }
         return false;
     }

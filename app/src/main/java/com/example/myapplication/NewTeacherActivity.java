@@ -172,7 +172,7 @@ public class NewTeacherActivity extends AppCompatActivity {
     private String getQualificationsInOneLine(){
         StringBuilder qualificationsInOneLine = new StringBuilder();
         for (int i = 0; i < 12 ; i++){
-            if(i == 0) qualificationsInOneLine.append(qualifications[i]);
+            qualificationsInOneLine.append(qualifications[i]);
         if(qualifications[i+1] == null || i == 11) return qualificationsInOneLine.toString()+".";
             else qualificationsInOneLine.append(", ");
         }
