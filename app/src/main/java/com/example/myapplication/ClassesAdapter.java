@@ -16,9 +16,10 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 public class ClassesAdapter extends RecyclerView.Adapter<ClassesAdapter.ViewHolder> {
-    private final LayoutInflater inflater;
+
     private ArrayList<Class> classes;
     private final OnClassClickListener onClickListener;
+    private final LayoutInflater inflater;
     public interface OnClassClickListener{
         void onClassClick(Class currentClass, int position);
     }

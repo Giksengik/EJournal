@@ -7,27 +7,23 @@ public class School implements Serializable {
     public ArrayList <Employee> listEmployees;
     public ArrayList <Teacher>  listTeachers;
     public ArrayList <Learner>  listLearners;
-    public String address;
     public String name;
-    public static int num_of_cards=1;
-    public static int num_of_classes=0;
     public ArrayList <Class> listClasses;
     public ArrayList <Elective> listElectives;
     public ArrayList <Section> listSections;
-    public void getListTeachers(){
-
+    public ArrayList <Teacher> getListTeachers(){
+        return listTeachers;
     }
-    public void getListEmployees(){
-
+    public ArrayList <Employee> getListEmployees(){
+        return listEmployees;
     }
-    public void getListLearners(){
-
+    public ArrayList <Learner> getListLearners(){
+        return listLearners;
     }
     public void getElectronicJournal(){
 
     }
     public void getParticipant(){
-
     }
 
     public School(){
