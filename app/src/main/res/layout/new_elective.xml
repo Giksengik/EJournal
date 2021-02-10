@@ -31,116 +31,110 @@
             android:textColor="#100909"
             android:textSize="18sp" />
 
-        <RadioGroup
-            android:id="@+id/newElecitiveDialogRadioGroup"
+        <LinearLayout
             android:layout_width="250dp"
-            android:layout_height="180dp">
+            android:layout_height="180dp"
+            android:orientation="horizontal">
 
-            <LinearLayout
+            <RadioGroup
+                android:id="@+id/newElecitiveDialogRadioGroupLeft"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_weight="1">
 
-                <LinearLayout
+                <RadioButton
+                    android:id="@+id/newElectiveDialogPhysicalTrainingRadioButton"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_height="30dp"
+                    android:text="Physical Training"
+                    android:textSize="10sp" />
 
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogMathematicsRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Mathematics"
-                        android:textSize="10sp" />
-
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogPhysicsRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Physics"
-                        android:textSize="10sp" />
-
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogBiologyRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Biology"
-                        android:textSize="10sp" />
-
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogChemistryRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Chemistry"
-                        android:textSize="10sp" />
-
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogSocialStudiesRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Social studies"
-                        android:textSize="10sp" />
-
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogHistoryRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="History"
-                        android:textSize="10sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <RadioButton
+                    android:id="@+id/newElectiveDialogComputerScienceRadioButton"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_height="30dp"
+                    android:text="Computer science"
+                    android:textSize="10sp" />
 
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogPhysicalTrainingRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Physical Training"
-                        android:textSize="10sp" />
+                <RadioButton
+                    android:id="@+id/newEleciiveDialogNativeLanguageRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Native Language"
+                    android:textSize="10sp" />
 
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogComputerScienceRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Computer science"
-                        android:textSize="10sp" />
+                <RadioButton
+                    android:id="@+id/newElecitiveDialogLiteratureRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Literature"
+                    android:textSize="10sp" />
 
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogNativeLanguageRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Native Language"
-                        android:textSize="10sp" />
+                <RadioButton
+                    android:id="@+id/newElectiveDialogForeignLanguageRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Foreign Language"
+                    android:textSize="10sp" />
 
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogLiteratureRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Literature"
-                        android:textSize="10sp" />
+                <RadioButton
+                    android:id="@+id/newElectiveDialogGeographyRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Geography"
+                    android:textSize="10sp" />
+            </RadioGroup>
 
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogForeignLanguageRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Foreign Language"
-                        android:textSize="10sp" />
+            <RadioGroup
+                android:id="@+id/newElecitiveDialogRadioGroupRight"
+                android:layout_width="250dp"
+                android:layout_height="180dp"
+                android:layout_weight="1">
 
-                    <RadioButton
-                        android:id="@+id/newElecitiveDialogGeographyRadioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:text="Geography"
-                        android:textSize="10sp" />
-                </LinearLayout>
-            </LinearLayout>
-        </RadioGroup>
+                <RadioButton
+                    android:id="@+id/newElectiveDialogBiologyRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Biology"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/newElectiveDialogMathematicsRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Mathematics"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/newElectiveDialogPhysicsRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Physics"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/newElectiveDialogChemistryRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Chemistry"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/newElectiveDialogSocialStudiesRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="Social studies"
+                    android:textSize="10sp" />
+
+                <RadioButton
+                    android:id="@+id/newElectiveDialogHistoryRadioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:text="History"
+                    android:textSize="10sp" />
+
+            </RadioGroup>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textView31"
@@ -153,12 +147,11 @@
             android:textSize="18sp" />
 
         <EditText
-            android:id="@+id/newElecitiveDialogTeacherID"
+            android:id="@+id/newElectiveDialogTeacherID"
             android:layout_width="250dp"
             android:layout_height="40dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:inputType="textPersonName" />
 
         <LinearLayout
             android:layout_width="250dp"
@@ -166,14 +159,14 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/newElecitiveDialogAddButton"
+                android:id="@+id/newElectiveDialogAddButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Add" />
 
             <Button
-                android:id="@+id/newElecitiveDialogCancelButton"
+                android:id="@+id/newElectiveDialogCancelButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
