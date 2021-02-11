@@ -101,16 +101,24 @@ public class ElectivesActivity extends AppCompatActivity {
     private void informWrongSubjectInput(){
            newElectiveDialogWrongSubject.setText("Wrong input!");
     }
-    private void checkAndAddNewElective(){
+    private void informTeacherDoesNotFit(){
+        newElectiveDialogTeacherID.setText("");
+        newElectiveDialogTeacherID.setHint("Teacher doesn't fit");
+        newElectiveDialogTeacherID.setHintTextColor(Color.RED);
+    }
+    private void createNewElective(Teacher teacher, String subject){
+
+    }
+    private void checkAndAddNewElective(int teacherID){
         String subject = null;
         if (newElectiveDialogBiologyRadioButton.isChecked()) {
             subject = "Biology";
         } else if (newElectiveDialogChemistryRadioButton.isChecked()) {
             subject = "Chemistry";
         } else if (newElectiveDialogComputerScienceRadioButton.isChecked()) {
-            subject = "Computer science";
+            subject = "Computer Science";
         } else if (newElectiveDialogNativeLanguageRadioButton.isChecked()) {
-            subject = "Native language";
+            subject = "Native Language";
         } else if (newElectiveDialogForeignLanguageRadioButton.isChecked()) {
             subject = "Foreign Language";
         } else if (newElectiveDialogGeographyRadioButton.isChecked()) {
@@ -124,10 +132,17 @@ public class ElectivesActivity extends AppCompatActivity {
         } else if (newElectiveDialogMathematicsRadioButton.isChecked()) {
             subject = "Mathematics";
         } else if (newElectiveDialogSocialStudiesRadioButton.isChecked()) {
-            subject = "Social studies";
+            subject = "Social Studies";
         } else if (newElectiveDialogPhysicsRadioButton.isChecked()) {
             subject = "Physics";
         }else informWrongSubjectInput();
+        if (subject != null){
+            if (peopleDAO.findParticipantsStatusByID(teacherID).equals("TEACHER")) {
+                Teacher toCheck =  peopleDAO.findTeacherByID(teacherID);
+                if(StringExercise.checkIsSubString(toCheck.getQualifications(), subject)) createNewElective(toCheck, subject);
+                else informTeacherDoesNotFit();
+            }else informWrongNewTeacherInput();
+        }
     }
     public void defineNewElectiveDialogButtons(){
         newElectiveDialogRadioGroupRight.setOnCheckedChangeListener((group, checkedId) -> {
@@ -163,7 +178,7 @@ public class ElectivesActivity extends AppCompatActivity {
         });
         newElectiveDialogAddButton.setOnClickListener(v -> {
             if(StringValidation.isCorrectID(newElectiveDialogTeacherID.getText().toString(), peopleDAO.PEOPLE_COUNT))
-                checkAndAddNewElective();
+                checkAndAddNewElective(Integer.parseInt(newElectiveDialogTeacherID.getText().toString()));
             else informWrongNewTeacherInput();
         });
     }
