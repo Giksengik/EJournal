@@ -38,8 +38,8 @@ public class NewEmployeeActivity extends AppCompatActivity {
         employeePosition.setHintTextColor(Color.RED);
         employeePosition.setText("");
     }
-    private void startMainActivityWithResult() {
-        Intent i = new Intent(NewEmployeeActivity.this, MainActivity.class);
+    private void startPersonsActivityWithResult() {
+        Intent i = new Intent(NewEmployeeActivity.this, PersonsActivity.class);
         i.putExtra("peopleDAO", peopleDAO);
         setResult(RESULT_CANCELED, i);
         startActivity(i);
@@ -60,7 +60,7 @@ public class NewEmployeeActivity extends AppCompatActivity {
                         saveNewEmployeeInDataBase();
                         putNewEmployeeToSchool();
                         Toast.makeText(this, "Employee is created", Toast.LENGTH_SHORT).show();
-                        startMainActivityWithResult();
+                        startPersonsActivityWithResult();
                     } else informWrongInputPosition();
                 } else informWrongInputPhone();
             } else informWrongInputName();

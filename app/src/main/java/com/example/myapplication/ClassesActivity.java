@@ -197,6 +197,7 @@ public class ClassesActivity extends AppCompatActivity {
             showClass(currentClass);
         };
     }
+
     private void defineButtonOkNewClassListener(){
         buttonOkNewClass.setOnClickListener(v -> {
             if (isCorrectTeacherIDInput(newClassTeacherID.getText().toString())) {
@@ -205,6 +206,8 @@ public class ClassesActivity extends AppCompatActivity {
                 else {
                     if(isTeacherFree(currentTeacher.getCardID())){
                         saveNewClassInDataBase();
+                        peopleDAO.school.listClasses.add(new Class(newClassTeacherID.getText().toString(),currentTeacher,new ArrayList<Learner>()));
+                        dialogNewClass.dismiss();
                     }else{
                         informTeacherIsNotFree();
                     }

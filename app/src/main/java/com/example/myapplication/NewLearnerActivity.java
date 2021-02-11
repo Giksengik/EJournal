@@ -64,8 +64,8 @@ public class NewLearnerActivity extends AppCompatActivity {
         learnersPhone.setHint("wrong input, don't write + ");
         learnersPhone.setHintTextColor(Color.RED);
     }
-    private void startMainActivityWithResult(){
-        Intent i=new Intent(NewLearnerActivity.this,MainActivity.class);
+    private void startPersonsActivityWithResult(){
+        Intent i=new Intent(NewLearnerActivity.this,PersonsActivity.class);
         i.putExtra("peopleDAO", peopleDAO);
         setResult(RESULT_CANCELED,i);
         startActivity(i);
@@ -104,7 +104,7 @@ public class NewLearnerActivity extends AppCompatActivity {
                 saveNewLearnerInDataBase();
                 putNewLearnerInSchool();
                 Toast.makeText(this, "Learner is created", Toast.LENGTH_SHORT).show();
-                startMainActivityWithResult();
+                startPersonsActivityWithResult();
             }
         });
     }

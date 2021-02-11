@@ -7,6 +7,11 @@ public class Elective implements Serializable {
     public String academicSubject;
     public ArrayList<Learner> listLearners;
     public Teacher  electiveTeacher;
+    public Elective(Teacher teacher, String academicSubject){
+        this.electiveTeacher = teacher;
+        this.academicSubject = academicSubject;
+        this.listLearners = new ArrayList<>();
+    }
     public void getList(){
     }
     public void  getListParents(){

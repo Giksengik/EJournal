@@ -14,13 +14,13 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ElectivesActivity extends AppCompatActivity {
         private Button addNewElectiveButton;
         private ImageButton searchButton;
         private EditText searchBoard;
-        private ElectivesAdapter.OnElectivesClickListener electiveClickListener;
 
         private TextView dialogElectiveSubject;
         private TextView dialogElectiveTeacherID;
@@ -28,7 +28,7 @@ public class ElectivesActivity extends AppCompatActivity {
         private EditText dialogElectiveAddNewLearner;
         private Button dialogElectiveCancelButton;
         private Button dialogElectiveAddLearnerButton;
-        private Dialog dialogElective;
+
 
 
         private RadioGroup newElectiveDialogRadioGroupRight;
@@ -48,12 +48,15 @@ public class ElectivesActivity extends AppCompatActivity {
         private EditText newElectiveDialogTeacherID;
         private Button newElectiveDialogAddButton;
         private Button newElectiveDialogCancelButton;
+
         private PeopleDAO peopleDAO;
-        private RecyclerView electivesList;
         private Dialog newElectiveDialog;
+        private Dialog dialogElective;
         private TextView newElectiveDialogWrongSubject;
         private boolean notCheckedYet = true;
-    private void getPeopleDao(){
+        private ElectivesDAO electivesDAO;
+
+        private void getPeopleDao(){
         Intent mIntent = getIntent();
         peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
         peopleDAO.setDbHelper(new DBHelper(this));
@@ -107,7 +110,17 @@ public class ElectivesActivity extends AppCompatActivity {
         newElectiveDialogTeacherID.setHintTextColor(Color.RED);
     }
     private void createNewElective(Teacher teacher, String subject){
-
+        electivesDAO.database.insert(DBHelperElectives.TABLE_ELECTIVES, null ,
+                electivesDAO.makeContentValueForElective(subject, teacher.getCardID()));
+    }
+    private void putNewElectiveToSchool(Teacher teacher, String subject){
+        peopleDAO.school.listElectives.add(new Elective(teacher,subject));
+    }
+    private boolean checkIsTeacherFree(Teacher teacher){
+            for(Elective elective : peopleDAO.school.listElectives){
+                if(elective.electiveTeacher == teacher) return false;
+            }
+            return true;
     }
     private void checkAndAddNewElective(int teacherID){
         String subject = null;
@@ -139,7 +152,11 @@ public class ElectivesActivity extends AppCompatActivity {
         if (subject != null){
             if (peopleDAO.findParticipantsStatusByID(teacherID).equals("TEACHER")) {
                 Teacher toCheck =  peopleDAO.findTeacherByID(teacherID);
-                if(StringExercise.checkIsSubString(toCheck.getQualifications(), subject)) createNewElective(toCheck, subject);
+                if(StringExercise.checkIsSubString(toCheck.getQualifications(), subject) && checkIsTeacherFree(toCheck)) {
+                    createNewElective(toCheck, subject);
+                    putNewElectiveToSchool(toCheck,subject);
+                    newElectiveDialog.dismiss();
+                }
                 else informTeacherDoesNotFit();
             }else informWrongNewTeacherInput();
         }
@@ -191,7 +208,7 @@ public class ElectivesActivity extends AppCompatActivity {
         dialogElectiveCancelButton.setOnClickListener(v -> {dialogElective.dismiss();});
         dialogElectiveAddLearnerButton.setOnClickListener(v -> {
             if(StringValidation.isCorrectID(dialogElectiveAddNewLearner.getText().toString(), peopleDAO.PEOPLE_COUNT));
-//                checkAndAddNewLearner();
+//              checkAndAddNewLearner();
             else informWrongNewLearnerInput();
         });
     }
@@ -201,18 +218,33 @@ public class ElectivesActivity extends AppCompatActivity {
         addNewElectiveButton.setOnClickListener(v -> {
             newElectiveDialog.show();
         });
+        RecyclerView electivesList = (RecyclerView) findViewById(R.id.recyclerViewElectives);
+        electivesList.setLayoutManager(new LinearLayoutManager(this));
+        ElectivesAdapter.OnElectivesClickListener electiveClickListener = (currentElective, position) -> showElectiveDialog(currentElective);
+        ElectivesAdapter electivesAdapter =  new ElectivesAdapter(this, peopleDAO.school.listElectives, electiveClickListener);
+        electivesList.setAdapter(electivesAdapter);
     }
+    @SuppressLint("SetTextI18n")
+    private void showElectiveDialog(Elective elective){
+        dialogElectiveSubject.setText("Subject: "+elective.academicSubject);
+        dialogElectiveTeacherID .setText("Teacher's ID: "+elective.electiveTeacher.getCardID());
+        dialogElectiveNumOfLearners.setText("Number of Learners: "+ elective.listLearners.size());
+        dialogElective.show();
+    }
+    private void getElectiveDAO(){
+        electivesDAO = new ElectivesDAO();
+        electivesDAO.setDbHelper(new DBHelperElectives(this));
+        electivesDAO.createDatabase();
+        peopleDAO.school.listElectives = electivesDAO.getElectives(peopleDAO);
 
+    }
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_electives);
             getPeopleDao();
+            getElectiveDAO();
             findViews();
             defineButtonListeners();
-            electiveClickListener = (currentElective, position) -> newElectiveDialog.show();
-            ElectivesAdapter electivesAdapter =  new ElectivesAdapter(this,peopleDAO.school.listElectives,electiveClickListener);
-            electivesList = new RecyclerView(this);
-            electivesList.setAdapter(electivesAdapter);
         }
 }

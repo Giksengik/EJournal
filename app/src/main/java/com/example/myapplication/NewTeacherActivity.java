@@ -109,8 +109,8 @@ public class NewTeacherActivity extends AppCompatActivity {
         }
         return checkBoxInput(isCorrect);
     }
-    private void startMainActivityWithResult() {
-        Intent i=new Intent(NewTeacherActivity.this,MainActivity.class);
+    private void startPersonsActivityWithResult() {
+        Intent i=new Intent(NewTeacherActivity.this,PersonsActivity.class);
         setResult(RESULT_CANCELED,i);
         i.putExtra("peopleDAO", peopleDAO);
         startActivity(i);
@@ -126,7 +126,7 @@ public class NewTeacherActivity extends AppCompatActivity {
                 saveNewTeacherInDataBase();
                 Toast.makeText(this, "Teacher is created", Toast.LENGTH_SHORT).show();
                 putNewTeacherToSchool();
-                startMainActivityWithResult();
+                startPersonsActivityWithResult();
             }
         });
     }
