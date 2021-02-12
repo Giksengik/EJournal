@@ -204,11 +204,53 @@ public class ElectivesActivity extends AppCompatActivity {
         newElectiveDialogTeacherID.setHint("Wrong input");
         newElectiveDialogTeacherID.setHintTextColor(Color.RED);
     }
+    private boolean isLearnerWithIDExist(String learnerID){
+            return peopleDAO.findParticipantsStatusByID(Integer.parseInt(learnerID)).equals("LEARNER");
+    }
+    private boolean isLearnerAlreadyInElective(int learnerID,int teacherID){
+        for(Elective elective : peopleDAO.school.listElectives) {
+            if(elective.electiveTeacher.getCardID() == teacherID){
+                for(Learner learner : elective.listLearners){
+                    if(learner.getCardID() == learnerID) return true;
+                }
+                return false;
+            }
+        }
+        return true;
+    }
+    private void addLearnerToElective(int learnerID, int teacherID){
+        for(Elective elective : peopleDAO.school.listElectives) {
+            if(elective.electiveTeacher.getCardID() == teacherID){
+                elective.listLearners.add(peopleDAO.findLearnerByID(learnerID));
+            }
+        }
+    }
+    private void informLearnerIsAlreadyInElective(){
+        dialogElectiveAddNewLearner.setText("");
+        dialogElectiveAddNewLearner.setHint("Learner is already int elective");
+        dialogElectiveAddNewLearner.setHintTextColor(Color.RED);
+    }
+    private void informLearnerDoesNotExist(){
+        dialogElectiveAddNewLearner.setText("");
+        dialogElectiveAddNewLearner.setHint("Learner with this ID doesn't exist");
+        dialogElectiveAddNewLearner.setHintTextColor(Color.RED);
+    }
+
+    private void checkAndAddNewLearner(String learnerID) {
+            if(isLearnerWithIDExist(learnerID)){
+                if(!isLearnerAlreadyInElective(Integer.parseInt(learnerID), Integer.parseInt(dialogElectiveTeacherID.getText().toString().substring(14)))){
+                    electivesDAO.addLearnerToElectiveDB(Integer.parseInt(learnerID), Integer.parseInt(dialogElectiveTeacherID.getText().toString().substring(14)));
+
+                    addLearnerToElective(Integer.parseInt(learnerID), Integer.parseInt(dialogElectiveTeacherID.getText().toString().substring(14)));
+                }
+                else informLearnerIsAlreadyInElective();
+            } else informLearnerDoesNotExist();
+    }
     private void defineDialogElectiveButtons(){
         dialogElectiveCancelButton.setOnClickListener(v -> {dialogElective.dismiss();});
         dialogElectiveAddLearnerButton.setOnClickListener(v -> {
-            if(StringValidation.isCorrectID(dialogElectiveAddNewLearner.getText().toString(), peopleDAO.PEOPLE_COUNT));
-//              checkAndAddNewLearner();
+            if(StringValidation.isCorrectID(dialogElectiveAddNewLearner.getText().toString(), peopleDAO.PEOPLE_COUNT))
+              checkAndAddNewLearner(dialogElectiveAddNewLearner.getText().toString());
             else informWrongNewLearnerInput();
         });
     }

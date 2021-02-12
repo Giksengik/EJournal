@@ -32,9 +32,9 @@ public class Elective implements Serializable {
                 return R.drawable.native_language_in_list;
             case "Literature":
                 return R.drawable.literature_in_list;
-            case "Foreign language":
+            case "Foreign Language":
                 return R.drawable.foreign_language_in_list;
-            case "Social studies":
+            case "Social Studies":
                 return R.drawable.social_studies_in_list;
             case "History":
                 return R.drawable.history_in_list;
@@ -42,7 +42,7 @@ public class Elective implements Serializable {
                 return R.drawable.biology_in_list;
             case "Chemistry":
                 return R.drawable.chemisty_in_list;
-            case "Computer science":
+            case "Computer Science":
                 return R.drawable.computer_science_in_list;
             case "Geography":
                 return R.drawable.geography_in_list;
