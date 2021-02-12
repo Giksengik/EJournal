@@ -17,11 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class ElectivesActivity extends AppCompatActivity {
         private Button addNewElectiveButton;
         private ImageButton searchButton;
         private EditText searchBoard;
-
+        private ImageButton closeSearchButton;
         private TextView dialogElectiveSubject;
         private TextView dialogElectiveTeacherID;
         private TextView dialogElectiveNumOfLearners;
@@ -30,7 +32,7 @@ public class ElectivesActivity extends AppCompatActivity {
         private Button dialogElectiveAddLearnerButton;
 
 
-
+        private RecyclerView electivesList;
         private RadioGroup newElectiveDialogRadioGroupRight;
         private RadioGroup newElectiveDialogRadioGroupLeft;
         private RadioButton newElectiveDialogPhysicalTrainingRadioButton;
@@ -49,6 +51,9 @@ public class ElectivesActivity extends AppCompatActivity {
         private Button newElectiveDialogAddButton;
         private Button newElectiveDialogCancelButton;
 
+        private ElectivesAdapter electivesAdapter;
+        private ArrayList<Elective> electivesInList;
+        private ElectivesAdapter.OnElectivesClickListener electiveClickListener;
         private PeopleDAO peopleDAO;
         private Dialog newElectiveDialog;
         private Dialog dialogElective;
@@ -94,6 +99,7 @@ public class ElectivesActivity extends AppCompatActivity {
         newElectiveDialogAddButton = newElectiveDialog.findViewById(R.id.newElectiveDialogAddButton);
         newElectiveDialogCancelButton = newElectiveDialog.findViewById(R.id.newElectiveDialogCancelButton);
         newElectiveDialogWrongSubject = newElectiveDialog.findViewById(R.id.newElectiveDialogWrongSibject);
+        closeSearchButton = findViewById(R.id.electiveCloseSearchButton);
     }
     public void informWrongNewLearnerInput(){
         dialogElectiveAddNewLearner.setText("");
@@ -260,10 +266,12 @@ public class ElectivesActivity extends AppCompatActivity {
         addNewElectiveButton.setOnClickListener(v -> {
             newElectiveDialog.show();
         });
-        RecyclerView electivesList = (RecyclerView) findViewById(R.id.recyclerViewElectives);
+        electivesList = (RecyclerView) findViewById(R.id.recyclerViewElectives);
         electivesList.setLayoutManager(new LinearLayoutManager(this));
-        ElectivesAdapter.OnElectivesClickListener electiveClickListener = (currentElective, position) -> showElectiveDialog(currentElective);
-        ElectivesAdapter electivesAdapter =  new ElectivesAdapter(this, peopleDAO.school.listElectives, electiveClickListener);
+        electiveClickListener = (currentElective, position) -> showElectiveDialog(currentElective);
+        electivesInList = new ArrayList<>();
+        electivesInList.addAll(peopleDAO.school.listElectives);
+        electivesAdapter =  new ElectivesAdapter(this, electivesInList, electiveClickListener);
         electivesList.setAdapter(electivesAdapter);
     }
     @SuppressLint("SetTextI18n")
@@ -280,6 +288,58 @@ public class ElectivesActivity extends AppCompatActivity {
         peopleDAO.school.listElectives = electivesDAO.getElectives(peopleDAO);
 
     }
+    private void addElectivesBySubject(String subject, ArrayList<Elective> electivesToSee){
+        for(Elective elective : peopleDAO.school.listElectives){
+            if (elective.academicSubject.equals(subject)) electivesToSee.add(elective);
+        }
+    }
+    private void defineSearchSystem(){
+            searchButton.setOnClickListener(v -> {
+                String subject = searchBoard.getText().toString();
+                ArrayList <Elective> electivesToSee = new ArrayList<>();
+                if(StringValidation.isCorrectString(subject)) {
+                    if (subject.equals("Mathematics") || subject.equals("mathematics"))
+                        addElectivesBySubject("Mathematics", electivesToSee);
+                    if (subject.equals("Physics") || subject.equals("physics")) {
+                        addElectivesBySubject("Physics", electivesToSee);
+                    }
+                    if (subject.equals("Computer Science") || subject.equals("Computer science") || subject.equals("computer science")
+                            || subject.equals("computer Science"))
+                        addElectivesBySubject("Computer Science", electivesToSee);
+                    if (subject.equals("Foreign Language") || subject.equals("foreign language") || subject.equals("foreign Language")
+                            || subject.equals("Foreign language"))
+                        addElectivesBySubject("Foreign Language", electivesToSee);
+                    if (subject.equals("Native Language") || subject.equals("Native language") || subject.equals("native language")
+                            || subject.equals("native Language"))
+                        addElectivesBySubject("Native Language", electivesToSee);
+                    if (subject.equals("Literature") || subject.equals("literature"))
+                        addElectivesBySubject("Literature", electivesToSee);
+                    if (subject.equals("Geography") || subject.equals("geography"))
+                        addElectivesBySubject("Geography", electivesToSee);
+                    if (subject.equals("Physical Training") || subject.equals("physical Training") || subject.equals("physical training")
+                            || subject.equals("Physical training"))
+                        addElectivesBySubject("PhysicalTraining", electivesToSee);
+                    if (subject.equals("Biology") || subject.equals("biology"))
+                        addElectivesBySubject("Biology", electivesToSee);
+                    if (subject.equals("Chemistry") || subject.equals("chemistry"))
+                        addElectivesBySubject("Chemistry", electivesToSee);
+                    if (subject.equals("Social Studies") || subject.equals("social Studies") || subject.equals("social studies")
+                            || subject.equals("Social studies"))
+                        addElectivesBySubject("Social Studies", electivesToSee);
+                    if (subject.equals("History") || subject.equals("history"))
+                        addElectivesBySubject("History", electivesToSee);
+                }
+                electivesInList.clear();
+                electivesInList.addAll(electivesToSee);
+                electivesAdapter.notifyDataSetChanged();
+            });
+            closeSearchButton.setOnClickListener(v -> {
+                electivesInList.clear();
+                electivesInList.addAll(peopleDAO.school.listElectives);
+                electivesAdapter.notifyDataSetChanged();
+            });
+    }
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -288,5 +348,6 @@ public class ElectivesActivity extends AppCompatActivity {
             getElectiveDAO();
             findViews();
             defineButtonListeners();
+            defineSearchSystem();
         }
 }

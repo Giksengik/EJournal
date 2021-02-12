@@ -41,8 +41,15 @@
                 android:inputType="textPersonName" />
 
             <ImageButton
+                android:id="@+id/electiveCloseSearchButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="10"
+                app:srcCompat="@android:drawable/btn_dialog" />
+
+            <ImageButton
                 android:id="@+id/searchButtonElectives"
-                android:layout_width="wrap_content"
+                android:layout_width="30dp"
                 android:layout_height="40dp"
                 android:layout_marginRight="10dp"
                 android:layout_weight="1"
