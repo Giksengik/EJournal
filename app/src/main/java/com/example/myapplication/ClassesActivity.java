@@ -45,7 +45,7 @@ public class ClassesActivity extends AppCompatActivity {
     private PeopleDAO peopleDAO;
     private ClassesDAO classesDAO;
     private ClassesAdapter.OnClassClickListener classClickListener;
-
+    private Button buttonMainMenuClasses;
     private EditText searchBoardClasses;
     private ImageButton searchButton;
 
@@ -101,6 +101,7 @@ public class ClassesActivity extends AppCompatActivity {
 
 
     private void defineNewClassDialog() {
+        buttonMainMenuClasses = findViewById(R.id.buttonMainMenuClasses);
         this.dialogNewClass = new Dialog(ClassesActivity.this);
         dialogNewClass.setContentView(R.layout.new_class);
         this.newClassTeacherID = (EditText) dialogNewClass.findViewById(R.id.newClassTeacherId);
@@ -189,7 +190,8 @@ public class ClassesActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerViewClasses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setRecyclerViewListener();
-        ClassesAdapter adapter =  new ClassesAdapter(this,peopleDAO.school.listClasses, classClickListener);
+        ArrayList<Class> classesInList = new ArrayList<>(peopleDAO.school.listClasses);
+        ClassesAdapter adapter =  new ClassesAdapter(this, classesInList, classClickListener);
         recyclerView.setAdapter(adapter);
     }
     private void setRecyclerViewListener(){
@@ -266,6 +268,7 @@ public class ClassesActivity extends AppCompatActivity {
     private void defineButtonsListeners() {
         defineNewClassDialogButtonListeners();
         defineClassAddLearnerDialogListeners();
+        defineMainMenuButtonListener();
     }
     private void defineDialogElements() {
         defineClassDialog();
@@ -293,6 +296,14 @@ public class ClassesActivity extends AppCompatActivity {
         classesDAO.setDbHelper(new DBHelperClasses(this));
         classesDAO.createDatabase();
     }
+    private void defineMainMenuButtonListener(){
+        buttonMainMenuClasses.setOnClickListener(v -> {
+            Intent i;
+            i = new Intent(ClassesActivity.this, MainActivity.class);
+            i.putExtra("peopleDAO", peopleDAO);
+            startActivityForResult(i,1);
+        });
+    }
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -301,6 +312,5 @@ public class ClassesActivity extends AppCompatActivity {
 //        classesDAO.dbHelperClasses.onCreate(classesDAO.database);
         classesDAO.getClasses(peopleDAO);
         defineElementsAndContentView();
-
     }
 }

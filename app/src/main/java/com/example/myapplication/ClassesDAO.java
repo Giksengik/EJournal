@@ -19,15 +19,17 @@ public class ClassesDAO implements Serializable {
         database = dbHelperClasses.getWritableDatabase();
     }
     public void getClasses(PeopleDAO peopleDAO){
+        ArrayList<Class> classes = new ArrayList<>();
         @SuppressLint("Recycle") Cursor cursor = database.query(DBHelperClasses.TABLE_CLASSES,
                 null,null,null,null,null,null);
         if (cursor.moveToFirst()) {
             do {
                 addClass(cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME)),
                         peopleDAO.findTeacherByID(cursor.getInt(cursor.getColumnIndex(DBHelper.KEY_TEACHER_ID))),
-                        getLearnersListByParsingString(cursor.getString(cursor.getColumnIndex(DBHelperClasses.KEY_LEARNERS)), peopleDAO), peopleDAO);
+                        getLearnersListByParsingString(cursor.getString(cursor.getColumnIndex(DBHelperClasses.KEY_LEARNERS)), peopleDAO), classes);
             }while(cursor.moveToNext());
         }
+        peopleDAO.school.listClasses = classes;
     }
     public void addLearnerToClass(String className, int learnerID){
         @SuppressLint("Recycle") Cursor cursor = database.query(DBHelperClasses.TABLE_CLASSES,
@@ -42,8 +44,8 @@ public class ClassesDAO implements Serializable {
         }
         cursor.close();
     }
-    private void addClass (String name, Teacher teacher, ArrayList<Learner> learnersList, PeopleDAO peopleDAO) {
-        peopleDAO.school.listClasses.add(new Class(name, teacher,learnersList));
+    private void addClass (String name, Teacher teacher, ArrayList<Learner> learnersList, ArrayList<Class> classes) {
+        classes.add(new Class(name, teacher,learnersList));
     }
     private ArrayList<Learner> getLearnersListByParsingString(String learnersString, PeopleDAO peopleDAO){
         ArrayList<Learner> learnersList = new ArrayList<>();

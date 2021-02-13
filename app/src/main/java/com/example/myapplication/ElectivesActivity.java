@@ -32,8 +32,7 @@ public class ElectivesActivity extends AppCompatActivity {
         private Button dialogElectiveAddLearnerButton;
 
 
-        private RecyclerView electivesList;
-        private RadioGroup newElectiveDialogRadioGroupRight;
+    private RadioGroup newElectiveDialogRadioGroupRight;
         private RadioGroup newElectiveDialogRadioGroupLeft;
         private RadioButton newElectiveDialogPhysicalTrainingRadioButton;
         private RadioButton newElectiveDialogMathematicsRadioButton;
@@ -50,7 +49,7 @@ public class ElectivesActivity extends AppCompatActivity {
         private EditText newElectiveDialogTeacherID;
         private Button newElectiveDialogAddButton;
         private Button newElectiveDialogCancelButton;
-
+        private Button buttonMainMenuElectives;
         private ElectivesAdapter electivesAdapter;
         private ArrayList<Elective> electivesInList;
         private ElectivesAdapter.OnElectivesClickListener electiveClickListener;
@@ -100,6 +99,7 @@ public class ElectivesActivity extends AppCompatActivity {
         newElectiveDialogCancelButton = newElectiveDialog.findViewById(R.id.newElectiveDialogCancelButton);
         newElectiveDialogWrongSubject = newElectiveDialog.findViewById(R.id.newElectiveDialogWrongSibject);
         closeSearchButton = findViewById(R.id.electiveCloseSearchButton);
+        buttonMainMenuElectives = findViewById(R.id.buttonMainMenuElectives);
     }
     public void informWrongNewLearnerInput(){
         dialogElectiveAddNewLearner.setText("");
@@ -263,10 +263,11 @@ public class ElectivesActivity extends AppCompatActivity {
     private void defineButtonListeners(){
         defineDialogElectiveButtons();
         defineNewElectiveDialogButtons();
+        defineMainMenuButtonListener();
         addNewElectiveButton.setOnClickListener(v -> {
             newElectiveDialog.show();
         });
-        electivesList = (RecyclerView) findViewById(R.id.recyclerViewElectives);
+        RecyclerView electivesList = (RecyclerView) findViewById(R.id.recyclerViewElectives);
         electivesList.setLayoutManager(new LinearLayoutManager(this));
         electiveClickListener = (currentElective, position) -> showElectiveDialog(currentElective);
         electivesInList = new ArrayList<>();
@@ -339,7 +340,14 @@ public class ElectivesActivity extends AppCompatActivity {
                 electivesAdapter.notifyDataSetChanged();
             });
     }
-
+    private void defineMainMenuButtonListener(){
+        buttonMainMenuElectives.setOnClickListener(v -> {
+            Intent i;
+            i = new Intent(ElectivesActivity.this, MainActivity.class);
+            i.putExtra("peopleDAO", peopleDAO);
+            startActivityForResult(i,1);
+        });
+    }
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);

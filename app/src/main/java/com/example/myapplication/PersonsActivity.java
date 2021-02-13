@@ -50,6 +50,7 @@ public class PersonsActivity extends AppCompatActivity {
     private TextView teacherQualifications ;
     private TextView teacherPosition;
     private Button cancelInfoTeacher;
+    private Button buttonMainMenuPeople;
     private ParticipantAdapter.OnParticipantClickListener participantClickListener;
     ArrayList<Participant> persons;
     private void defineEmployeeDialog(){
@@ -82,6 +83,7 @@ public class PersonsActivity extends AppCompatActivity {
         teacherQualifications = (TextView)dialogTeacher.findViewById(R.id.teacherQualifications);
         teacherPosition = (TextView)dialogTeacher.findViewById(R.id.teacherPosition);
         cancelInfoTeacher = (Button)dialogTeacher.findViewById(R.id.cancelInfoTeacher);
+        buttonMainMenuPeople = (Button) findViewById(R.id.buttonMainMenuFromPeople);
 
     }
     private void defineDialogs(){
@@ -101,11 +103,6 @@ public class PersonsActivity extends AppCompatActivity {
     private void informWrongInput () {
         searchBoard.setText("");
         searchBoard.setHint("wrong input");
-        searchBoard.setHintTextColor(Color.RED);
-    }
-    private void informThereIsNoPerson(){
-        searchBoard.setText("");
-        searchBoard.setHint("no person with this id");
         searchBoard.setHintTextColor(Color.RED);
     }
     private void findParticipantByID(int id){
@@ -257,6 +254,15 @@ public class PersonsActivity extends AppCompatActivity {
         peopleDAO = (PeopleDAO) mIntent.getSerializableExtra("peopleDAO");
         peopleDAO.setDbHelper(new DBHelper(this));
         peopleDAO.createDatabase();
+
+    }
+    private void defineMainMenuButtonListener(){
+        buttonMainMenuPeople.setOnClickListener(v -> {
+            Intent i;
+            i = new Intent(PersonsActivity.this, MainActivity.class);
+            i.putExtra("peopleDAO", peopleDAO);
+            startActivityForResult(i,1);
+        });
     }
     @SuppressLint("SetTextI18n")
         @Override
@@ -266,6 +272,7 @@ public class PersonsActivity extends AppCompatActivity {
             getPeopleDao();
             defineListView();
             defineButtons();
+            defineMainMenuButtonListener();
         }
     }
 

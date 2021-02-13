@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
             Intent i;
             i = new Intent(MainActivity.this, ElectivesActivity.class);
             i.putExtra("peopleDAO", peopleDAO);
-            startActivity(i);
+            startActivityForResult(i,1);
         });
     }
     private void defineButtonClassesListener() {
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent i;
                 i = new Intent(MainActivity.this, ClassesActivity.class);
                 i.putExtra("peopleDAO", peopleDAO);
-                startActivity(i);
+                startActivityForResult(i,1);
             }
         });
     }
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             Intent i;
             i = new Intent(MainActivity.this, PersonsActivity.class);
             i.putExtra("peopleDAO", peopleDAO);
-            startActivity(i);
+            startActivityForResult(i,1);
         });
     }
     private void defineButtonSectionsListener() {
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
             Intent i;
             i = new Intent(MainActivity.this, SectionsActivity.class);
             i.putExtra("peopleDAO", peopleDAO);
-            startActivity(i);
+            startActivityForResult(i,1);
         });
     }
     private void defineButtonsListeners(){
