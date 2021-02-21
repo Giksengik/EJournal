@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/dialogElectiveSubject"
-            android:layout_width="250dp"
+            android:layout_width="251dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:paddingLeft="10dp"
