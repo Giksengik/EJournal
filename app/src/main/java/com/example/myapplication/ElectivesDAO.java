@@ -46,7 +46,8 @@ public class ElectivesDAO implements Serializable {
         if(cursor.moveToFirst()){
             String oldStringLearners = cursor.getString(cursor.getColumnIndex(DBHelperElectives.KEY_LEARNERS))+"";
             String newStringLearners = oldStringLearners + learnerID + ",";
-            database.execSQL("UPDATE "+DBHelperElectives.TABLE_ELECTIVES+" SET " + DBHelperElectives.KEY_LEARNERS + " = " +"'" + newStringLearners + "'");
+            database.execSQL("UPDATE "+DBHelperElectives.TABLE_ELECTIVES+" SET " + DBHelperElectives.KEY_LEARNERS + " = " +"'" + newStringLearners + "'" +
+                    " WHERE "+DBHelperElectives.KEY_TEACHER_ID + " = " + teacherID);
         }
     }
     public ArrayList<Elective> getElectives(PeopleDAO peopleDAO){
