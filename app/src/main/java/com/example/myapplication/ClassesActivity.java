@@ -80,7 +80,6 @@ public class ClassesActivity extends AppCompatActivity {
     @SuppressLint("SetTextI18n")
     void showClass(Class currentClass) {
         defineDialogClassFields(currentClass);
-
         dialogClass.show();
     }
 
@@ -227,18 +226,18 @@ public class ClassesActivity extends AppCompatActivity {
         defineListView();
         defineButtonsListeners();
     }
-    private void putNewLearnerToClass(Learner learner,String nameClass){
+    private void putNewLearnerToClass(Learner learner,int teacherID){
         for(Class currentClass :peopleDAO.school.listClasses){
-            if(currentClass.number.equals(nameClass)) {
+            if(currentClass.classTeacher.getCardID() == teacherID) {
                 currentClass.learnersList.add(learner);
                 break;
             }
         }
     }
     private void findClassToAddLeanerByNameAndAddLearner(Learner currentLearner){
-        String classToAdd = className.getText().toString().substring(12);
-        classesDAO.addLearnerToClass(classToAdd, currentLearner.getCardID());
-        putNewLearnerToClass(currentLearner,classToAdd);
+        int teacherID = Integer.parseInt(classTeacherId.getText().toString().substring(20));
+        classesDAO.addLearnerToClass(teacherID, currentLearner.getCardID());
+        putNewLearnerToClass(currentLearner,teacherID);
     }
     private void defineButtonClassAddButton(){
         buttonClassAddLearner.setOnClickListener(v -> {
@@ -249,6 +248,8 @@ public class ClassesActivity extends AppCompatActivity {
                     if (isLearnerFree(currentLearner.getCardID())) {
                         findClassToAddLeanerByNameAndAddLearner(currentLearner);
                         Toast.makeText(this, "Learner added", Toast.LENGTH_SHORT).show();
+                        newClassLearnerId.setText("");
+                        dialogClass.dismiss();
                     }
                     else informLearnerIsNotFree();
                 }

@@ -246,8 +246,9 @@ public class ElectivesActivity extends AppCompatActivity {
             if(isLearnerWithIDExist(learnerID)){
                 if(!isLearnerAlreadyInElective(Integer.parseInt(learnerID), Integer.parseInt(dialogElectiveTeacherID.getText().toString().substring(14)))){
                     electivesDAO.addLearnerToElectiveDB(Integer.parseInt(learnerID), Integer.parseInt(dialogElectiveTeacherID.getText().toString().substring(14)));
-
                     addLearnerToElective(Integer.parseInt(learnerID), Integer.parseInt(dialogElectiveTeacherID.getText().toString().substring(14)));
+                    dialogElectiveAddNewLearner.setText("");
+                    dialogElective.dismiss();
                 }
                 else informLearnerIsAlreadyInElective();
             } else informLearnerDoesNotExist();

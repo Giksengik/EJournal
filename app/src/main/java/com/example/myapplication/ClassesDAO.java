@@ -31,16 +31,13 @@ public class ClassesDAO implements Serializable {
         }
         peopleDAO.school.listClasses = classes;
     }
-    public void addLearnerToClass(String className, int learnerID){
-        @SuppressLint("Recycle") Cursor cursor = database.query(DBHelperClasses.TABLE_CLASSES,
-                null,null,null,null,null,null);
+    public void addLearnerToClass(int teacherID, int learnerID){
+        String query ="select * from " + DBHelperClasses.TABLE_CLASSES +" WHERE "+DBHelperClasses.KEY_TEACHER_ID + " = " + teacherID;
+        @SuppressLint("Recycle") Cursor cursor = database.rawQuery(query,null);
         if (cursor.moveToFirst()) {
-            do {
-                if (cursor.getString(cursor.getColumnIndex(DBHelper.KEY_NAME)).equals(className)){
-                    String toUpdate =  cursor.getString(cursor.getColumnIndex(DBHelperClasses.KEY_LEARNERS)) +learnerID + ",";
-                    database.execSQL("UPDATE "+DBHelperClasses.TABLE_CLASSES+" SET " + DBHelperClasses.KEY_LEARNERS + " = " +"'" + toUpdate + "'");
-                }
-            }while(cursor.moveToNext());
+            String toUpdate =  cursor.getString(cursor.getColumnIndex(DBHelperClasses.KEY_LEARNERS)) +learnerID + ",";
+            database.execSQL("UPDATE "+DBHelperClasses.TABLE_CLASSES+" SET " + DBHelperClasses.KEY_LEARNERS + " = " +"'" + toUpdate + "'" +
+                    " WHERE "+DBHelperClasses.KEY_TEACHER_ID + " = " + teacherID);
         }
         cursor.close();
     }
