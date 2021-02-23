@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class SectionsActivity extends AppCompatActivity {
     private PeopleDAO peopleDAO;
     private final String informationDisciplineNotPicked = "Discipline not picked";
+    private final String informationSectionAlreadyExist = "Section already exist";
     private SectionsDAO sectionsDAO;
     private DisciplinesAdapter disciplineAdapter;
     private Button buttonAddDiscipline;
@@ -30,7 +31,15 @@ public class SectionsActivity extends AppCompatActivity {
     private EditText searchBoard;
     private ImageButton buttonCloseSearch;
     private ImageButton buttonSearch;
-    private RecyclerView recyclerView;
+    private ArrayList<Section> sectionsInList;
+
+    private RecyclerView sectionsRecyclerView;
+    private SectionsAdapter.OnSectionClickListener onSectionClickListener;
+
+    private Dialog dialogSection;
+    private TextView sectionDiscipline;
+    private TextView sectionTeacherID;
+    private TextView sectionNumOfLearners;
 
     private Dialog dialogNewDiscipline;
     private EditText newDisciplineName;
@@ -44,11 +53,15 @@ public class SectionsActivity extends AppCompatActivity {
     private Button closeNewSectionButton;
     private TextView pickedDiscipline;
     private DisciplinesAdapter.OnDisciplineClickListener disciplinesClickListener;
+
+
     private void defineDialogs() {
         dialogNewDiscipline = new Dialog(this);
         dialogNewDiscipline.setContentView(R.layout.new_discipline);
         dialogNewSection = new Dialog(this);
         dialogNewSection.setContentView(R.layout.new_section);
+        dialogSection = new Dialog(this);
+        dialogSection.setContentView(R.layout.info_section);
 
     }
     private void defineElements () {
@@ -68,6 +81,12 @@ public class SectionsActivity extends AppCompatActivity {
         closeNewSectionButton = dialogNewSection.findViewById(R.id.buttonCloseNewSection);
         disciplinesRecyclerView = dialogNewSection.findViewById(R.id.recyclerViewDisciplines);
         pickedDiscipline = dialogNewSection.findViewById(R.id.pickedDiscipline);
+
+        sectionsRecyclerView = findViewById(R.id.recyclerViewSections);
+
+        sectionDiscipline = dialogSection.findViewById(R.id.sectionDiscipline);
+        sectionTeacherID = dialogSection.findViewById(R.id.sectionTeacherID);;
+        sectionNumOfLearners = dialogSection.findViewById(R.id.sectionNumOfLearners);
     }
     private void informWrongDisciplineInput() {
         newDisciplineName.setText("");
@@ -97,23 +116,30 @@ public class SectionsActivity extends AppCompatActivity {
             disciplinesRecyclerView.setAdapter(disciplineAdapter);
         });
         addNewSectionButton.setOnClickListener(v -> {
-            if(!pickedDiscipline.getText().toString().equals("") ||
-                    !pickedDiscipline.getText().toString().equals(informationDisciplineNotPicked)){
-                if(StringValidation.isCorrectID(newSectionTeacherID.getText().toString(),peopleDAO.PEOPLE_COUNT)){
-                    if(peopleDAO.findParticipantsStatusByID(Integer.parseInt(newSectionTeacherID.getText().toString()))
-                            .equals("TEACHER")){
-                        Teacher currentTeacher = peopleDAO.findTeacherByID(Integer.parseInt(newSectionTeacherID.getText().toString()));
-                        if(isTeacherFree(currentTeacher.getCardID())) {
-                            addNewSection(currentTeacher,pickedDiscipline.getText().toString());
-                        }else informTeacherNotFree();
-                    }
-                    else informWrongInputTeacher();
-                }else informWrongInputTeacher();
-            }else informDisciplineNotSelected();
+            if (!pickedDiscipline.getText().toString().equals("") &&
+                    !pickedDiscipline.getText().toString().equals(informationDisciplineNotPicked) &&
+                    !pickedDiscipline.getText().toString().equals(informationSectionAlreadyExist)
+            ) {
+                if (!sectionsDAO.isSectionAlreadyExist(pickedDiscipline.getText().toString())) {
+                    if (StringValidation.isCorrectID(newSectionTeacherID.getText().toString(), peopleDAO.PEOPLE_COUNT)) {
+                        if (peopleDAO.findParticipantsStatusByID(Integer.parseInt(newSectionTeacherID.getText().toString()))
+                                .equals("TEACHER")) {
+                            Teacher currentTeacher = peopleDAO.findTeacherByID(Integer.parseInt(newSectionTeacherID.getText().toString()));
+                            if (isTeacherFree(currentTeacher.getCardID())) {
+                                addNewSection(currentTeacher, pickedDiscipline.getText().toString());
+                            } else informTeacherNotFree();
+                        } else informWrongInputTeacher();
+                    } else informWrongInputTeacher();
+                } else informSectionAlreadyExist();
+            } else informDisciplineNotSelected();
         });
         closeNewSectionButton.setOnClickListener(v -> {
             dialogNewSection.dismiss();
         });
+    }
+    private void informSectionAlreadyExist(){
+        pickedDiscipline.setText(informationSectionAlreadyExist);
+        pickedDiscipline.setTextColor(Color.RED);
     }
     private void informTeacherNotFree(){
         newSectionTeacherID.setHintTextColor(Color.RED);
@@ -148,6 +174,11 @@ public class SectionsActivity extends AppCompatActivity {
         disciplinesClickListener = (discipline, position) -> {
                 pickedDiscipline.setText(discipline);
             };
+        sectionsInList = sectionsDAO.getSections(peopleDAO);
+        sectionsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        onSectionClickListener = (section, position) -> showSection(section);
+        SectionsAdapter adapter =  new SectionsAdapter(this,sectionsInList,onSectionClickListener);
+        sectionsRecyclerView.setAdapter(adapter);
         }
 
     private void getSectionsDAO(){
@@ -165,6 +196,17 @@ public class SectionsActivity extends AppCompatActivity {
         peopleDAO.setDbHelper(new DBHelper(this));
         peopleDAO.createDatabase();
     }
+    @SuppressLint("SetTextI18n")
+    private void setSectionDialogFields (Section section) {
+        sectionDiscipline.setText(section.name);
+        sectionTeacherID.setText(section.classTeacher.getCardID()+"");
+        sectionNumOfLearners.setText(section.learners.size()+"");
+    }
+    private void showSection(Section section){
+        setSectionDialogFields(section);
+        dialogSection.show();
+
+    }
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -175,6 +217,7 @@ public class SectionsActivity extends AppCompatActivity {
             defineElements();
             defineRecyclerViews();
             defineButtonListeners();
+            dialogSection.show();
         }
     }
 

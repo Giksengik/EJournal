@@ -18,4 +18,7 @@ public class Section implements Serializable {
         this.classTeacher=classTeacher;
         this.learners=learners;
     }
+    Section() {
+
+    }
 }
