@@ -29,7 +29,6 @@ public class SectionsActivity extends AppCompatActivity {
     private Button buttonAddSection;
     private Button buttonMainMenu;
     private EditText searchBoard;
-    private ImageButton buttonCloseSearch;
     private ImageButton buttonSearch;
     private ArrayList<Section> sectionsInList;
 
@@ -40,6 +39,9 @@ public class SectionsActivity extends AppCompatActivity {
     private TextView sectionDiscipline;
     private TextView sectionTeacherID;
     private TextView sectionNumOfLearners;
+    private Button sectionCloseButton;
+    private Button sectionAddLearnerButton;
+    private EditText sectionNewLearnerID;
 
     private Dialog dialogNewDiscipline;
     private EditText newDisciplineName;
@@ -69,7 +71,6 @@ public class SectionsActivity extends AppCompatActivity {
        buttonAddSection = findViewById(R.id.buttonAddSection);
        buttonMainMenu = findViewById(R.id.buttonMainMenuSections);
        searchBoard = findViewById(R.id.searchBoardSections);
-       buttonCloseSearch = findViewById(R.id.closeSearchButtonSections);
        buttonSearch = findViewById(R.id.searchButtonSections);
 
        newDisciplineName = dialogNewDiscipline.findViewById(R.id.newDisciplineName);
@@ -87,6 +88,9 @@ public class SectionsActivity extends AppCompatActivity {
         sectionDiscipline = dialogSection.findViewById(R.id.sectionDiscipline);
         sectionTeacherID = dialogSection.findViewById(R.id.sectionTeacherID);;
         sectionNumOfLearners = dialogSection.findViewById(R.id.sectionNumOfLearners);
+        sectionCloseButton = dialogSection.findViewById(R.id.buttonCloseSection);
+        sectionAddLearnerButton = dialogSection.findViewById(R.id.buttonAddLearnerToSection);;
+        sectionNewLearnerID = dialogSection.findViewById(R.id.sectionNewLearnerID);
     }
     private void informWrongDisciplineInput() {
         newDisciplineName.setText("");
@@ -136,6 +140,44 @@ public class SectionsActivity extends AppCompatActivity {
         closeNewSectionButton.setOnClickListener(v -> {
             dialogNewSection.dismiss();
         });
+        sectionCloseButton.setOnClickListener(v -> { dialogSection.dismiss();});
+        sectionAddLearnerButton.setOnClickListener(v -> {
+            if(StringValidation.isCorrectID(sectionNewLearnerID.getText().toString(), peopleDAO.PEOPLE_COUNT)
+            && peopleDAO.findParticipantsStatusByID(Integer.parseInt(sectionNewLearnerID.getText().toString())).equals("LEARNER")){
+                if(isLearnerFree(Integer.parseInt((sectionNewLearnerID.getText().toString())))){
+                    addLearnerToSection(Integer.parseInt((sectionNewLearnerID.getText().toString())),
+                            sectionsDAO.getSectionByDiscipline(sectionDiscipline.getText().toString(),peopleDAO));
+                }else informLearnerNotFree();
+            }else informWrongInputNewLearner();
+        });
+        buttonSearch.setOnClickListener(v -> {
+            if(StringValidation.isCorrectString(searchBoard.getText().toString())){
+                if ( sectionsDAO.getSectionByDiscipline(searchBoard.getText().toString(),peopleDAO) != null){
+                    showSection(sectionsDAO.getSectionByDiscipline(searchBoard.getText().toString(),peopleDAO));
+                }else informNoSuchSection();
+            }
+        });
+        buttonMainMenu.setOnClickListener(v -> {
+            Intent i;
+                i = new Intent(SectionsActivity.this, MainActivity.class);
+            i.putExtra("peopleDAO", peopleDAO);
+            startActivityForResult(i,1);
+        });
+    }
+    private void informNoSuchSection(){
+        searchBoard.setText("");
+        searchBoard.setHintTextColor(Color.RED);
+        searchBoard.setHint("No such section");
+    }
+    private void informLearnerNotFree(){
+        sectionNewLearnerID.setText("");
+        sectionNewLearnerID.setHintTextColor(Color.RED);
+        sectionNewLearnerID.setHint("Learner not free");
+    }
+    private void informWrongInputNewLearner(){
+        sectionNewLearnerID.setText("");
+        sectionNewLearnerID.setHintTextColor(Color.RED);
+        sectionNewLearnerID.setHint("Wrong input");
     }
     private void informSectionAlreadyExist(){
         pickedDiscipline.setText(informationSectionAlreadyExist);
@@ -207,6 +249,19 @@ public class SectionsActivity extends AppCompatActivity {
         dialogSection.show();
 
     }
+    private boolean isLearnerFree(int learnerID) {
+        for(Section section : peopleDAO.school.listSections) {
+            for(Learner learner : section.learners){
+                if( learner.getCardID() == learnerID) return false;
+            }
+        }
+        return true;
+    }
+    private void addLearnerToSection(int learnerID, Section section) {
+        if(isLearnerFree(learnerID)) {
+            sectionsDAO.addLearnerToSection(learnerID, section.name);
+        }
+    }
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -217,7 +272,6 @@ public class SectionsActivity extends AppCompatActivity {
             defineElements();
             defineRecyclerViews();
             defineButtonListeners();
-            dialogSection.show();
         }
     }
 

@@ -106,4 +106,19 @@ public class SectionsDAO implements Serializable {
         }
         return learners;
     }
+    public void addLearnerToSection(int learnerID, String discipline) {
+        String query = "select * from " + DBHelperSections.TABLE_SECTIONS  +
+                " WHERE "+DBHelperSections.KEY_DISCIPLINE + " = " + "'"+discipline +"'";
+        @SuppressLint("Recycle") Cursor cursor = databaseSections.rawQuery(query, null);
+        if(cursor.moveToFirst()){
+            String oldStringLearners = cursor.getString(cursor.getColumnIndex(DBHelperElectives.KEY_LEARNERS))+"";
+            String newStringLearners = oldStringLearners + learnerID + ",";
+            databaseSections.execSQL("UPDATE "+DBHelperSections.TABLE_SECTIONS+" SET "
+                    + DBHelperSections.KEY_LEARNERS + " = " +"'" + newStringLearners + "'" +
+                    " WHERE "+DBHelperSections.KEY_DISCIPLINE + " = " +"'" + discipline+ "'" );
+        }
+
+    }
+
+
 }
