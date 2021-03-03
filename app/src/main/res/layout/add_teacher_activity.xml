@@ -8,7 +8,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -40,7 +41,8 @@
                 android:layout_marginLeft="20dp"
                 android:ems="10"
                 android:hint=" enter the required data here"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/textView13"
@@ -58,7 +60,8 @@
                 android:layout_marginLeft="20dp"
                 android:ems="10"
                 android:hint=" enter the required data here"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/textView15"
@@ -76,7 +79,8 @@
                 android:layout_marginLeft="20dp"
                 android:ems="10"
                 android:hint=" enter the required data here"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/textView14"
@@ -100,7 +104,8 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:height="40dp"
-                    android:text="Mathematics" />
+                    android:text="Mathematics"
+                    android:textColor="#000000" />
 
                 <CheckBox
                     android:id="@+id/checkBoxPhysics"
@@ -108,7 +113,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
-                    android:text="Physics" />
+                    android:text="Physics"
+                    android:textColor="#000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -123,7 +129,8 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:height="40dp"
-                    android:text="Biology" />
+                    android:text="Biology"
+                    android:textColor="#000000" />
 
                 <CheckBox
                     android:id="@+id/checkBoxChemistry"
@@ -131,7 +138,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
-                    android:text="Chemistry" />
+                    android:text="Chemistry"
+                    android:textColor="#000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -146,7 +154,8 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:height="40dp"
-                    android:text="History" />
+                    android:text="History"
+                    android:textColor="#000000" />
 
                 <CheckBox
                     android:id="@+id/checkBoxComputerScience"
@@ -154,7 +163,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
-                    android:text="Computer Science" />
+                    android:text="Computer Science"
+                    android:textColor="#000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -169,7 +179,8 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:height="40dp"
-                    android:text="Social Studies" />
+                    android:text="Social Studies"
+                    android:textColor="#000000" />
 
                 <CheckBox
                     android:id="@+id/checkBoxPhysicalTraining"
@@ -177,7 +188,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
-                    android:text=" Physical Training" />
+                    android:text=" Physical Training"
+                    android:textColor="#000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -192,7 +204,8 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:height="40dp"
-                    android:text="Geography" />
+                    android:text="Geography"
+                    android:textColor="#000000" />
 
                 <CheckBox
                     android:id="@+id/checkBoxForeignLanguage"
@@ -200,7 +213,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
-                    android:text="Foreign Language" />
+                    android:text="Foreign Language"
+                    android:textColor="#000000" />
             </LinearLayout>
 
             <LinearLayout
@@ -215,7 +229,8 @@
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
                     android:height="40dp"
-                    android:text="Literature" />
+                    android:text="Literature"
+                    android:textColor="#000000" />
 
                 <CheckBox
                     android:id="@+id/checkBoxNativeLanguage"
@@ -223,7 +238,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"
                     android:layout_weight="1"
-                    android:text="Native Language" />
+                    android:text="Native Language"
+                    android:textColor="#000000" />
             </LinearLayout>
 
             <Button
@@ -231,7 +247,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="Confirm" />
+                android:text="Confirm"
+                android:textColor="#FFFFFF" />
 
             <TextView
                 android:id="@+id/newTeacherWrongInput"

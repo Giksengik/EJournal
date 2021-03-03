@@ -25,8 +25,9 @@ import java.util.ArrayList;
 
 public class ClassesActivity extends AppCompatActivity {
     private School school;
+    private ArrayList<Class> classesInList;
     final String FILE_NAME_CLASSES = "class";
-
+    private ClassesAdapter adapter;
     private Dialog dialogClass;
     private TextView className;
     private TextView classTeacherName;
@@ -189,8 +190,8 @@ public class ClassesActivity extends AppCompatActivity {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerViewClasses);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         setRecyclerViewListener();
-        ArrayList<Class> classesInList = new ArrayList<>(peopleDAO.school.listClasses);
-        ClassesAdapter adapter =  new ClassesAdapter(this, classesInList, classClickListener);
+        classesInList = new ArrayList<>(peopleDAO.school.listClasses);
+        adapter =  new ClassesAdapter(this, classesInList, classClickListener);
         recyclerView.setAdapter(adapter);
     }
     private void setRecyclerViewListener(){
@@ -208,6 +209,7 @@ public class ClassesActivity extends AppCompatActivity {
                     if(isTeacherFree(currentTeacher.getCardID())){
                         saveNewClassInDataBase();
                         peopleDAO.school.listClasses.add(new Class(newClassTeacherID.getText().toString(),currentTeacher,new ArrayList<Learner>()));
+                        updateClassesList();
                         dialogNewClass.dismiss();
                     }else{
                         informTeacherIsNotFree();
@@ -217,6 +219,11 @@ public class ClassesActivity extends AppCompatActivity {
                 informWrongTeacherIDInput();
             }
         });
+    }
+    private void updateClassesList() {
+        classesInList.clear();
+        classesInList.addAll(peopleDAO.school.listClasses);
+        adapter.notifyDataSetChanged();
     }
     private void defineElementsAndContentView() {
         setContentView(R.layout.activity_classes);

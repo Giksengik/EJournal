@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -131,6 +132,8 @@ public class SectionsActivity extends AppCompatActivity {
                             Teacher currentTeacher = peopleDAO.findTeacherByID(Integer.parseInt(newSectionTeacherID.getText().toString()));
                             if (isTeacherFree(currentTeacher.getCardID())) {
                                 addNewSection(currentTeacher, pickedDiscipline.getText().toString());
+                                updateSectionList();
+                                dialogNewSection.dismiss();
                             } else informTeacherNotFree();
                         } else informWrongInputTeacher();
                     } else informWrongInputTeacher();
@@ -163,6 +166,11 @@ public class SectionsActivity extends AppCompatActivity {
             i.putExtra("peopleDAO", peopleDAO);
             startActivityForResult(i,1);
         });
+    }
+    private void updateSectionList() {
+        sectionsInList.clear();
+        sectionsInList.addAll(peopleDAO.school.listSections);
+        disciplineAdapter.notifyDataSetChanged();
     }
     private void informNoSuchSection(){
         searchBoard.setText("");

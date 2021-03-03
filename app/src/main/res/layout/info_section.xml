@@ -2,7 +2,8 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="250dp"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,7 +52,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp" >
+            android:layout_height="40dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -132,7 +133,8 @@
                 android:layout_weight="1000"
                 android:height="40dp"
                 android:ems="10"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="#000000" />
         </LinearLayout>
 
         <LinearLayout
@@ -145,14 +147,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="close" />
+                android:text="close"
+                android:textColor="#FFFFFF" />
 
             <Button
                 android:id="@+id/buttonAddLearnerToSection"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="add learner" />
+                android:text="add learner"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
 
     </LinearLayout>

@@ -8,6 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#FFFFFF"
         android:orientation="vertical"
         tools:layout_editor_absoluteX="86dp"
         tools:layout_editor_absoluteY="66dp">
@@ -47,6 +48,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Physical Training"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -54,6 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Computer science"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -61,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Native Language"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -68,6 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Literature"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -75,6 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Foreign Language"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -82,6 +88,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Geography"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
             </RadioGroup>
 
@@ -96,6 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Biology"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -103,6 +111,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Mathematics"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -110,6 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Physics"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -117,6 +127,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Chemistry"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -124,6 +135,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="Social studies"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
                 <RadioButton
@@ -131,6 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:text="History"
+                    android:textColor="#000000"
                     android:textSize="10sp" />
 
             </RadioGroup>
@@ -158,7 +171,8 @@
             android:layout_width="250dp"
             android:layout_height="40dp"
             android:ems="10"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColor="#000000" />
 
         <LinearLayout
             android:layout_width="250dp"
@@ -170,14 +184,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Add" />
+                android:text="Add"
+                android:textColor="#FFFFFF" />
 
             <Button
                 android:id="@+id/newElectiveDialogCancelButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancel" />
+                android:text="Cancel"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,8 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -160,5 +162,6 @@ public class MainActivity extends AppCompatActivity {
         createPeopleDAO();
         defineSchool();
         defineElements();
+
     }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFFFFF">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,7 +40,8 @@
                 android:layout_marginLeft="20dp"
                 android:ems="10"
                 android:hint=" enter the required data here"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/textView17"
@@ -58,7 +59,8 @@
                 android:layout_marginLeft="20dp"
                 android:ems="10"
                 android:hint=" enter the required data here"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/textView18"
@@ -76,14 +78,16 @@
                 android:layout_marginLeft="20dp"
                 android:ems="10"
                 android:hint=" enter the required data here"
-                android:inputType="textPersonName" />
+                android:inputType="textPersonName"
+                android:textColor="#000000" />
 
             <Button
                 android:id="@+id/newEmployeeConfirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:text="Confirm" />
+                android:text="Confirm"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
     </ScrollView>
 
