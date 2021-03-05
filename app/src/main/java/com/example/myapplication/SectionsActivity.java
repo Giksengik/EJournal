@@ -150,6 +150,7 @@ public class SectionsActivity extends AppCompatActivity {
                 if(isLearnerFree(Integer.parseInt((sectionNewLearnerID.getText().toString())))){
                     addLearnerToSection(Integer.parseInt((sectionNewLearnerID.getText().toString())),
                             sectionsDAO.getSectionByDiscipline(sectionDiscipline.getText().toString(),peopleDAO));
+                    updateSectionList();
                 }else informLearnerNotFree();
             }else informWrongInputNewLearner();
         });

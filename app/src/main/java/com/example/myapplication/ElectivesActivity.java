@@ -255,6 +255,7 @@ public class ElectivesActivity extends AppCompatActivity {
                     electivesDAO.addLearnerToElectiveDB(Integer.parseInt(learnerID), Integer.parseInt(dialogElectiveTeacherID.getText().toString().substring(14)));
                     addLearnerToElective(Integer.parseInt(learnerID), Integer.parseInt(dialogElectiveTeacherID.getText().toString().substring(14)));
                     dialogElectiveAddNewLearner.setText("");
+                    updateElectivesList();
                     dialogElective.dismiss();
                 }
                 else informLearnerIsAlreadyInElective();
@@ -360,7 +361,6 @@ public class ElectivesActivity extends AppCompatActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_electives);
-            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
             getPeopleDao();
             getElectiveDAO();
             findViews();

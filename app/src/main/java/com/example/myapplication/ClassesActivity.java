@@ -208,7 +208,7 @@ public class ClassesActivity extends AppCompatActivity {
                 else {
                     if(isTeacherFree(currentTeacher.getCardID())){
                         saveNewClassInDataBase();
-                        peopleDAO.school.listClasses.add(new Class(newClassTeacherID.getText().toString(),currentTeacher,new ArrayList<Learner>()));
+                        peopleDAO.school.listClasses.add(new Class(newClassName.getText().toString(),currentTeacher,new ArrayList<Learner>()));
                         updateClassesList();
                         dialogNewClass.dismiss();
                     }else{
@@ -256,6 +256,7 @@ public class ClassesActivity extends AppCompatActivity {
                         findClassToAddLeanerByNameAndAddLearner(currentLearner);
                         Toast.makeText(this, "Learner added", Toast.LENGTH_SHORT).show();
                         newClassLearnerId.setText("");
+                        updateClassesList();
                         dialogClass.dismiss();
                     }
                     else informLearnerIsNotFree();
